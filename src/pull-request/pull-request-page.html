@@ -31,9 +31,13 @@
       </div>
     </div>
     <div class="diff">
-      <template is="dom-repeat" items="[[pr.chunks]]" as="chunk">
-        <pull-request-chunk class="draggable" chunk="[[chunk]]"></pull-request-chunk>
-      </template>
+      <sortable-js draggable="pull-request-chunk" handle=".title">
+        <template is="dom-repeat" items="[[pr.chunks]]" as="chunk">
+          <pull-request-chunk class="draggable" chunk="[[chunk]]" title="[[index]]">
+            <div class="title">[[index]]</div>
+          </pull-request-chunk>
+        </template>
+      </sortable-js>
     </div>
   </template>
   <script>
