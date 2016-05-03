@@ -53,7 +53,9 @@
     </paper-toolbar>
     <preview-list>
       <template is="dom-repeat" items="[[_filter(pullrequests, status)]]" as="pr">
-        <project-pull-request-list-item tabindex="0" pr="[[pr]]" show-status="[[_equals('All', status)]]"></project-pull-request-list-item>
+        <project-pull-request-list-item tabindex="0" pr="[[pr]]"
+              show-status="[[_equals('All', status)]]" on-tap="choosePR"
+              on-keydown="maybeSelectPR"></project-pull-request-list-item>
       </template>
     </preview-list>
   </template>
@@ -79,6 +81,7 @@
           {
             cistatus: 'failed',
             title: 'My best PR',
+            id: 25,
             owner: 'Tim van der Lippe',
             status: 'Under review',
             timeopened: 12341234,
@@ -99,6 +102,7 @@
           {
             cistatus: 'passed',
             title: 'My first PR',
+            id: 20,
             owner: 'Eva Anker',
             status: 'Under review',
             timeopened: 12341236,
@@ -119,6 +123,7 @@
           {
             cistatus: 'failed',
             title: 'Fix all the things',
+            id: 15,
             owner: 'Thomas Smith',
             status: 'Waiting for contributor',
             timeopened: 12341235,
@@ -158,6 +163,16 @@
 
       _withOwnerOnSmall: function(small, name, owner) {
         return name + (small ? ' by ' + owner : '');
+      },
+
+      choosePR: function(e) {
+        this.fire('pr-selected', e.model.pr.id);
+      },
+
+      maybeSelectPR: function(e) {
+        if (e.keyCode === 13) {
+          this.choosePR(e);
+        }
       }
     });
   </script>
