@@ -20,6 +20,12 @@
         display: block;
         border-bottom: black 1px solid;
       }
+      .diff--sortable {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-content: space-between;
+      }
     </style>
     <div class="overview">
       <h1>[[pr.title]]</h1>
@@ -31,7 +37,7 @@
       </div>
     </div>
     <div class="diff">
-      <sortable-js draggable="pull-request-chunk" handle=".title">
+      <sortable-js draggable="pull-request-chunk" handle=".title" class="diff--sortable">
         <template is="dom-repeat" items="[[pr.chunks]]" as="chunk">
           <pull-request-chunk class="draggable" chunk="[[chunk]]" title="[[index]]">
             <div class="title">[[index]]</div>
