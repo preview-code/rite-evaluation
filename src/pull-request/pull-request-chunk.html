@@ -25,7 +25,7 @@
       }
     </style>
     <content select=".title"></content>
-    <sortable-js id="sortable" group="chunk" draggable=".diff" force-fallback>
+    <sortable-js group="chunk" draggable=".diff" force-fallback>
       <template is="dom-repeat" items="[[chunk.diff]]">
         <div class="diff">[[item]]</div>
       </template>
@@ -39,7 +39,7 @@
         title: String
       },
       attached: function() {
-        this.$.sortable.getEffectiveChildren().forEach(function(el) {
+        document.querySelector('sortable-js').getEffectiveChildren().forEach(function(el) {
           if ((' ' + el.className + ' ').indexOf(' diff ') > -1) {
             Sortable.create(el, {
               group: 'chunk'
