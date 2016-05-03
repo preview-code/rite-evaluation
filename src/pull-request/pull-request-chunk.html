@@ -1,0 +1,29 @@
+<dom-module id="pull-request-chunk">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        width: 250px;
+        height: 250px;
+        border: black 1px solid;
+      }
+    </style>
+    <sortable-js group="chunk" draggable=".diff">
+      <template is="dom-repeat" items="[[chunk.diff]]">
+        <div class="diff">[[item]]</div>
+      </template>
+    </sortable-js>
+  </template>
+  <script>
+    Polymer({
+      is: 'pull-request-chunk',
+      properties: {
+        chunk: Object
+      },
+      attached: function() {
+        console.log(this.chunk.diff);
+        console.log(this.querySelectorAll('draggable'));
+      }
+    });
+  </script>
+</dom-module>
