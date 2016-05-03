@@ -2,10 +2,14 @@
   <template>
     <style>
       :host {
-        display: inline-block;
-        width: 250px;
+        display: block;
+        flex: auto;
+        flex-basis: 250px;
+        flex-grow: 0;
+        flex-shrink: 0;
         height: 250px;
         border: black 1px solid;
+        margin: 5px;
       }
       .diff {
         height: 50px;
