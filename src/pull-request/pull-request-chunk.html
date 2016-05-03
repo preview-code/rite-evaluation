@@ -7,8 +7,21 @@
         height: 250px;
         border: black 1px solid;
       }
+      .diff {
+        height: 50px;
+      }
+      .title {
+        height: 25px;
+        border-bottom: black 1px solid;
+      }
+      sortable-js {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
     </style>
-    <sortable-js group="chunk" draggable=".diff">
+    <content select=".title"></content>
+    <sortable-js id="sortable" group="chunk" draggable=".diff" force-fallback>
       <template is="dom-repeat" items="[[chunk.diff]]">
         <div class="diff">[[item]]</div>
       </template>
@@ -18,11 +31,17 @@
     Polymer({
       is: 'pull-request-chunk',
       properties: {
-        chunk: Object
+        chunk: Object,
+        title: String
       },
       attached: function() {
-        console.log(this.chunk.diff);
-        console.log(this.querySelectorAll('draggable'));
+        this.$.sortable.getEffectiveChildren().forEach(function(el) {
+          if ((' ' + el.className + ' ').indexOf(' diff ') > -1) {
+            Sortable.create(el, {
+              group: 'chunk'
+            });
+          }
+        });
       }
     });
   </script>
