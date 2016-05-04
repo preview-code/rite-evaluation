@@ -1,4 +1,7 @@
-<link rel="import" href="../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
 <link rel="import" href="pull-request-comment.html">
 <link rel="import" href="pull-request-chunk.html">
 
@@ -20,11 +23,20 @@
         display: block;
         border-bottom: black 1px solid;
       }
-      .diff--sortable {
+      .actions {
+        margin-right: 15px;
+      }
+      [icon='add'] {
+        border-radius: 20px;
+        background-color: white;
+        color: var(--primary-color);
+      }
+      .diff {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-content: space-between;
+        flex-direction: column;
+      }
+      .diff-list {
+        overflow-y: auto;
       }
     </style>
     <div class="overview">
@@ -37,13 +49,21 @@
       </div>
     </div>
     <div class="diff">
-      <sortable-js draggable="pull-request-chunk" handle=".title" class="diff--sortable">
+      <paper-toolbar justify="around">
+        <div class="title">
+
+        </div>
+        <div class="actions">
+          <paper-icon-button icon="add" on-tap="_addChunk"></paper-icon-button>
+        </div>
+      </paper-toolbar>
+      <div class="diff-list">
         <template is="dom-repeat" items="[[pr.chunks]]" as="chunk">
           <pull-request-chunk class="draggable" chunk="[[chunk]]" title="[[index]]">
             <div class="title">[[index]]</div>
           </pull-request-chunk>
         </template>
-      </sortable-js>
+      </div>
     </div>
   </template>
   <script>
@@ -57,6 +77,10 @@
           type: Object,
           computed: '_getPR(prid)'
         }
+      },
+
+      _addChunk: function() {
+        this.unshift('pr.chunks', {});
       },
 
       _getPR: function() {
@@ -103,6 +127,30 @@
               diff: [
                 'bla3',
                 'bla4'
+              ]
+            },
+            {
+              diff: [
+                'bla5',
+                'bla6'
+              ]
+            },
+            {
+              diff: [
+                'bla7',
+                'bla8'
+              ]
+            },
+            {
+              diff: [
+                'bla9',
+                'bla10'
+              ]
+            },
+            {
+              diff: [
+                'bla11',
+                'bla12'
               ]
             }
           ]
