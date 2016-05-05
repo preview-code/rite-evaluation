@@ -92,11 +92,13 @@
       },
       _addComment: function() {
         var newComment = {};
-        newComment.text = this.newtext;
-        newComment.poster = "Eva";
-        newComment.timeopened = "12 hours";
-        this.push('pr.comments', newComment);
-        this.newtext = "";
+        if(this.newtext.replace(/\s/g, '') !== ""){
+          newComment.text = this.newtext;
+          newComment.poster = "Eva";
+          newComment.timeopened = "12 hours";
+          this.push('pr.comments', newComment);
+          this.newtext = "";
+        }
       }
     });
   </script>
