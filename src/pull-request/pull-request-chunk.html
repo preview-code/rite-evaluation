@@ -41,7 +41,7 @@
         title: String
       },
       attached: function() {
-        var diffs = this.querySelector('sortable-js').getElementsByClassName('diff');
+        var diffs = this.$$('sortable-js').getElementsByClassName('diff');
         for (var i = 0, l = diffs.length; i < l; i++) {
           Sortable.create(diffs[i], {
             group: 'chunk'

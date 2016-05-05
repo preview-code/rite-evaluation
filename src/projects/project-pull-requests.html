@@ -2,7 +2,6 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="project-pull-request-list-item.html">
 <link rel="import" href="../list-items/preview-list.html">
 
@@ -11,6 +10,7 @@
     <style>
       :host {
         display: block;
+        max-width: 500px;
       }
       paper-toolbar {
         --paper-toolbar-color: var(--primary-text-color);
@@ -34,16 +34,13 @@
         margin: 0 auto;
       }
     </style>
-    <iron-media-query query="(max-width: 1250px)" query-matches="{{small}}"></iron-media-query>
-
     <paper-toolbar class="medium-tall">
       <header>
         <h1>
-          <span>[[_withOwnerOnSmall(small, name, owner)]]</span>
-          <span hidden$="[[small]]">by [[owner]]</span>
+          <span>[[name]] by [[owner]]</span>
         </h1>
       </header>
-      <paper-dropdown-menu class$="[[_shouldBeAtTop(small)]]" label="Pull request status" value="{{status}}">
+      <paper-dropdown-menu class="bottom" label="Pull request status" value="{{status}}">
         <paper-menu class="dropdown-content">
           <paper-item>All</paper-item>
           <paper-item>Under review</paper-item>
@@ -152,23 +149,12 @@
           return e.status === status;
         });
       },
-
       _equals: function(one, other) {
         return one === other;
       },
-
-      _shouldBeAtTop: function(small) {
-        return small ? 'bottom' : 'top';
-      },
-
-      _withOwnerOnSmall: function(small, name, owner) {
-        return name + (small ? ' by ' + owner : '');
-      },
-
       choosePR: function(e) {
         this.fire('pr-selected', e.model.pr.id);
       },
-
       maybeSelectPR: function(e) {
         if (e.keyCode === 13) {
           this.choosePR(e);

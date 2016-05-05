@@ -2,11 +2,8 @@
 <link rel="import" href="project-pull-requests.html">
 <link rel="import" href="project-overview-page.html">
 <link rel="import" href="project-list-item.html">
-<<<<<<< HEAD
 <link rel="import" href="../list-items/preview-list.html">
-=======
 <link rel="import" href="../pull-request/pull-request-page.html">
->>>>>>> Initial version of pull-request-page
 
 <dom-module id="projects-page">
   <template>
@@ -47,18 +44,18 @@
     <carbon-route route="{{nameTail}}" pattern="/:prid" data="{{prid}}"></carbon-route>
 
     <div class="container">
-      <preview-list>
-        <template is="dom-if" if="[[!_has(prid.prid)]]" restamp="true">
+      <template is="dom-if" if="[[!_has(prid.prid)]]" restamp="true">
+        <preview-list>
           <template is="dom-repeat" items="[[projects]]" as="project">
             <project-list-item project="[[project]]" selected="[[_isActiveProject(name.name, project, activeProject)]]" on-tap="chooseProject"
                                tabindex="0" on-keydown="maybeOpenProject"></project-list-item>
           </template>
-        </template>
-        <template is="dom-if" if="[[_has(prid.prid)]]" restamp="true">
-          <project-pull-requests tabindex="0" owner="[[owner.owner]]" name="[[name.name]]"
-              on-pr-selected="choosePR"></project-pull-requests>
-        </template>
-      </preview-list>
+        </preview-list>
+      </template>
+      <template is="dom-if" if="[[_has(prid.prid)]]" restamp="true">
+        <project-pull-requests tabindex="0" owner="[[owner.owner]]" name="[[name.name]]"
+            on-pr-selected="choosePR"></project-pull-requests>
+      </template>
 
       <div class="project" id="project">
         <template is="dom-if" if="[[_has(name.name)]]">
@@ -331,20 +328,13 @@
           });
         }
       },
-<<<<<<< HEAD
       _has: function() {
         return Array.prototype.slice.call(arguments).reduce(function(prev, current) {
           return prev && !!current;
         }, true);
-=======
+      },
       choosePR: function(e) {
         this.set('prid.prid', e.detail);
-      },
-      _has: function() {
-        return Array.prototype.slice.call(arguments).reduce(function(prev, current) {
-          return prev && current;
-        });
->>>>>>> Initial version of pull-request-page
       },
       _isActiveProject: function(name, project, activeProject) {
         return !!name && project === activeProject;
