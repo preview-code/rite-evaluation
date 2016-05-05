@@ -1,21 +1,31 @@
+<link rel="import" href="../list-items/column-list-item.html">
+<link rel="import" href="../list-items/list-item-label.html">
+
 <dom-module id="pull-request-comment">
   <template>
     <style>
-      :host {
+      .top-container{
         display: flex;
-        width: calc(100% - 10px);
-        border: black 1px solid;
-        margin: 5px;
-      }
-      :host > span {
-        flex: 1;
+        background-color: var(--secondary-background-color);
       }
       .poster {
-        max-width: 100px;
+        flex:1;
+      }
+      .time {
+        text-align: left;
       }
     </style>
-    <span class="poster">[[comment.poster]]</span>
-    <span class="text">[[comment.text]]</span>
+      <div class="top-container">
+        <div class="poster">
+          <span><b>[[comment.poster]]</b></span>
+        </div>
+        <div class="time">
+          <span>[[comment.timeopened]] ago</span>
+        </div>
+      </div>
+        <div class="comment">
+          <span>[[comment.text]]</span>
+        </div>
   </template>
   <script>
     Polymer({

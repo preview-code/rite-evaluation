@@ -2,8 +2,8 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
-<link rel="import" href="pull-request-comment.html">
 <link rel="import" href="pull-request-chunk.html">
+<link rel="import" href="pull-request-general-information.html">
 
 <dom-module id="pull-request-page">
   <template>
@@ -17,11 +17,9 @@
       }
       .overview {
         max-width: 500px;
-        border-right: black 1px solid;
       }
       .description {
         display: block;
-        border-bottom: black 1px solid;
       }
       .actions {
         margin-right: 15px;
@@ -39,15 +37,7 @@
         overflow-y: auto;
       }
     </style>
-    <div class="overview">
-      <h1>[[pr.title]]</h1>
-      <span class="description">[[pr.description]]</span>
-      <div class="comments">
-        <template is="dom-repeat" items="[[pr.comments]]">
-          <pull-request-comment comment="[[item]]"></pull-request-comment>
-        </template>
-      </div>
-    </div>
+    <pull-request-general-information class="overview" pr="[[pr]]"></pull-request-general-information>
     <div class="diff">
       <paper-toolbar justify="around">
         <div class="title">
@@ -78,11 +68,9 @@
           computed: '_getPR(prid)'
         }
       },
-
       _addChunk: function() {
         this.unshift('pr.chunks', {});
       },
-
       _getPR: function() {
         return {
           cistatus: 'failed',
@@ -95,25 +83,35 @@
           reviewers: [
             {
               name: 'Thomas Smith',
-              lgtm: true,
+              lgtm: 'true',
               profile: 'https://avatars0.githubusercontent.com/u/5946422?v=3&s=72'
             },
             {
               name: 'Eva Anker',
-              lgtm: false,
+              lgtm: 'false' ,
               profile: 'https://avatars1.githubusercontent.com/u/5946438?v=3&s=72'
             }
           ],
           comments: [
             {
               poster: 'Tim van der Lippe',
-              timeopened: 12341234,
-              text: 'Heeroy'
+              timeopened: '2 hours',
+              text: 'Looks good! I have fixed some tab issues (both a and paper-button had tabindex) and fixed indentation.We might want to add a background as the white background currently is a bit too empty.'
             },
             {
               poster: 'Eva Anker',
-              timeopened: 1345,
-              text: 'Hooi'
+              timeopened: '3 hours',
+              text: 'LGTM'
+            },
+            {
+              poster: 'Tim van der Lippe',
+              timeopened: '2 hours',
+              text: 'Looks good! I have fixed some tab issues (both a and paper-button had tabindex) and fixed indentation.We might want to add a background as the white background currently is a bit too empty.'
+            },
+            {
+              poster: 'Eva Anker',
+              timeopened: '5 hours',
+              text: 'LGTM'
             }
           ],
           chunks: [
