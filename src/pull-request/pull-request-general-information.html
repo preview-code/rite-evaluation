@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 <link rel="import" href="pull-request-comment.html">
 
@@ -41,6 +43,12 @@
       .pr-repeat{
         display:flex;
       }
+      .comment-input{
+        width: 100%;
+      }
+      .button{
+        float: right;
+      }
     </style>
     <div class="overview">
       <div class="pr-topinfo">
@@ -68,18 +76,28 @@
         <template is="dom-repeat" items="[[pr.comments]]">
           <pull-request-comment comment="[[item]]"></pull-request-comment>
         </template>
+        <paper-textarea class="comment-input" value="{{newtext}}"></paper-textarea>
+        <paper-button raised class="button" on-tap="_addComment">New comment</paper-button>
     </div>
   </template>
   <script>
     Polymer({
       is: 'pull-request-general-information',
       properties: {
-        pr: Object
+        pr: Object,
+        newtext: String
       },
-
       _equals: function(one, other) {
         return one === other;
       },
+      _addComment: function() {
+        var newComment = {};
+        newComment.text = this.newtext;
+        newComment.poster = "Eva";
+        newComment.timeopened = "12 hours";
+        this.push('pr.comments', newComment);
+        this.newtext = "";
+      }
     });
   </script>
 </dom-module>
