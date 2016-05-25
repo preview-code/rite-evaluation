@@ -257,8 +257,8 @@
                 fileUrl: fileUrl,
                 diffId: group[1],
                 changes: group[6],
-                linesChanged: {startLineBefore: group[2], rangeBefore: group[3],
-                               startLineAfter: group[4],  rangeAfter: group[5]}
+                linesChanged: {startLineBefore: group[2], rangeBefore: group[3] | 1,
+                               startLineAfter: group[4],  rangeAfter: group[5] | 1}
               });
             }
           }
