@@ -29,7 +29,7 @@
         projectPage = fixture('projects-page-fixture');
       });
 
-      test('If clicked on projet page hide list', function() {
+      test('hide list when project clicked', function() {
         projectPage.showProjectsList = true;
         MockInteractions.tap(Polymer.dom(projectPage.root).querySelector('iron-pages'));
         assert.isFalse(projectPage.showProjectsList);

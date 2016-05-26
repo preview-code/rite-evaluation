@@ -72,16 +72,6 @@
           done();
         });
       });
-
-      test('tabbing can select item', function() {
-        var ironSelector = Polymer.dom(branchSelector.root).querySelector('iron-selector');
-        flush(function() {
-          MockInteractions.pressAndReleaseKeyOn(ironSelector, 9);
-          MockInteractions.pressAndReleaseKeyOn(ironSelector, 9);
-          MockInteractions.pressEnter(ironSelector);
-          assert.equal('test', branchSelector.selected);
-        });
-      });
     });
   </script>
 

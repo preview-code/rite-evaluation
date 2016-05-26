@@ -27,18 +27,18 @@
         listNavigation = fixture('list-navigation-fixture');
       });
 
-      test('When no project selected, display the projectlist', function() {
+      test('display the projectlist when no project is selected', function() {
         listNavigation.projectSelected = false;
         assert.isTrue(listNavigation.showProjectsList);
       });
 
-      test('When project selected, show both lists' , function() {
+      test('shows both lists when a project is selected' , function() {
         listNavigation.projectSelected = true;
         assert.isTrue(listNavigation.showProjectsList);
         assert.isTrue(listNavigation.showPullList);
       });
 
-      test('When pull selected, show only pulllist' , function() {
+      test('shows only pulllist when a pull request is selected' , function() {
         listNavigation.projectSelected = true;
         listNavigation.pullRequestSelected = true;
         assert.isFalse(listNavigation.showProjectsList);
