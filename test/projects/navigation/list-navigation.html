@@ -97,6 +97,18 @@
         });
       });
 
+      test('select no project with pressing a random key', function(done) {
+        listNavigation.projects = [{name:'hello',owner:'world'}, {name:'hi', owner:'bye'}];
+        flush(function(){
+          var outcome = Polymer.dom(listNavigation.root).querySelector('project-list-item');
+          MockInteractions.pressSpace(outcome);
+          Polymer.Base.async(function() {
+            assert.isUndefined(listNavigation.activeProject);
+            done();
+          });
+        });
+      });
+
     });
   </script>
 
