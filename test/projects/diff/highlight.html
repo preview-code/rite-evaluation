@@ -196,6 +196,7 @@
     suite('<pull-request-diff-highlight>', function() {
       var diffElem;
       setup(function() {
+        replace('collapse-icon').with('stub-collapse-icon');
         diffElem = fixture('basic');
       });
 
@@ -221,6 +222,7 @@
         var diffElem;
 
         setup(function() {
+          replace('collapse-icon').with('stub-collapse-icon');
           diffElem = fixture('basic');
           diffElem.code = diff.changes;
           diffElem.linesChanged = diff.linesChanged;
@@ -271,9 +273,6 @@
         }
       });
     });
-
-
   </script>
-
 </body>
 </html>
