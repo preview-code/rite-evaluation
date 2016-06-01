@@ -1,0 +1,50 @@
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../diff/diff.html">
+<link rel="import" href="space/pull-request-space.html">
+
+<dom-module id="pull-request-changes">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .container {
+        display: flex;
+      }
+      pull-request-space, pull-request-diff {
+        flex: 1;
+      }
+    </style>
+    <header>
+      <paper-button raised on-tap="_showView">Show 2D view</paper-button>
+    </header>
+    <div class="container">
+      <pull-request-space data-route="space" groups="[[orderedGroups]]" hidden$="[[!_showSpace]]"></pull-request-space>
+      <pull-request-diff data-route="diff" diff="[[diff]]" ordering="[[ordering]]"
+          ordered-groups="{{orderedGroups}}"
+          base-url="[[selectedPull.head.repo.html_url]]" sha="[[selectedPull.head.sha]]"></pull-request-diff>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'pull-request-changes',
+      properties: {
+        diff: String,
+        ordering: Array,
+        baseUrl: String,
+        sha: String,
+        orderedGroups: Array,
+        _showSpace: {
+          type: Boolean,
+          value: false
+        }
+      },
+      _showView: function() {
+        this._showSpace = true;
+      }
+    });
+  </script>
+</dom-module>

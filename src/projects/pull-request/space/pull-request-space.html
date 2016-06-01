@@ -170,13 +170,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _calculateCoordinates: function(containerRect, fromRect, toRect) {
         var dy = Math.abs(toRect.top - fromRect.top);
         var dx = Math.abs(toRect.left - fromRect.left);
-        var anchorFrom, anchorTo;
-
-        var fromX, fromY, toX, toY;
+        var points;
 
         // Arrow points to the right
         if (fromRect.left < toRect.left) {
-          var points = this._calculateAnchorPoints(fromRect, toRect, dx, dy, containerRect);
+          points = this._calculateAnchorPoints(fromRect, toRect, dx, dy, containerRect);
 
           return {
             fromX: points.leftX,
@@ -186,16 +184,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           };
           // Arrow points to the left, so swap the values to make sure the Arrow
           // points in the correct direction
-        } else {
-          var points = this._calculateAnchorPoints(toRect, fromRect, dx, dy, containerRect);
-
-          return {
-            fromX: points.rightX,
-            fromY: points.rightY,
-            toX: points.leftX,
-            toY: points.leftY
-          };
         }
+
+        points = this._calculateAnchorPoints(toRect, fromRect, dx, dy, containerRect);
+
+        return {
+          fromX: points.rightX,
+          fromY: points.rightY,
+          toX: points.leftX,
+          toY: points.leftY
+        };
       },
       _drawArrow: function(ctx, coordinates) {
         var fromX = coordinates.fromX,
@@ -220,6 +218,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       // Recalc the canvas if we are currently dragging
       _recalcCanvas: function(forced) {
         if (this.dragging || forced) {
+          var fromRect, coordinates;
           // Update the width and height in case the frame was not calculated
           // yet on stamping, or the window was resized.
           var containerRect = this.containerRect;
@@ -229,13 +228,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
           for (var i=0, l=this._blocks.length;i<l;i++) {
             var fromBlock = this._blocks[i];
-            var fromRect = fromBlock.getBoundingClientRect();
+            fromRect = fromBlock.getBoundingClientRect();
 
             for (var j=0, c=fromBlock.connections.length; j<c;j++) {
               var connection = fromBlock.connections[j];
               var toRect = this._blocks[connection.id].getBoundingClientRect();
 
-              var coordinates = this._calculateCoordinates(containerRect, fromRect, toRect);
+              coordinates = this._calculateCoordinates(containerRect, fromRect, toRect);
 
               this._drawArrow(this.ctx, coordinates);
             }
@@ -243,8 +242,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
           // We are currently creating a new connection
           if (this._previousCard) {
-            var fromRect = this._previousCard.getBoundingClientRect();
-            var coordinates = this._calculateCoordinates(containerRect, fromRect, {
+            fromRect = this._previousCard.getBoundingClientRect();
+            coordinates = this._calculateCoordinates(containerRect, fromRect, {
               top: this._mouseY,
               bottom: this._mouseY,
               left: this._mouseX,
