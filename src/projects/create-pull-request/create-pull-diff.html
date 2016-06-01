@@ -27,6 +27,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../util/fade-in-behavior.html">
 <link rel="import" href="../diff/diff.html">
 
@@ -60,11 +61,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-right: auto;
       }
     </style>
+    <iron-ajax
+      id="backendcall"
+      url="https://localhost:8443/pr/[[project.owner]]/[[project.name]]/[[sha]]/setstatus/No_reviewer_assigned"
+      handle-as="json"></iron-ajax>
     <div class="title">
       <h2>Describe your changes</h2>
       <h3>You can drag the different groups and diff views separately.</h3>
 
-      <paper-button raised>Create pull request</paper-button>
+      <paper-button on-tap="_saveStatus" raised>Create pull request</paper-button>
     </div>
     <pull-request-diff editable diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]"></pull-request-diff>
   </template>
@@ -75,9 +80,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       properties: {
         diff: String,
         baseUrl: String,
-        sha: String
+        sha: String,
+        project: Object
       },
-      behaviors: [FadeInBehavior]
+      behaviors: [FadeInBehavior],
+      _saveStatus: function() {
+        this.$.backendcall.generateRequest();
+      }
     });
   </script>
 </dom-module>

@@ -41,6 +41,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         white-space: normal;
       }
     </style>
+    <iron-ajax
+      id="setPrStatus"
+      url="https://localhost:8443/pr/[[pullRequest.base.repo.owner.login]]/[[pullRequest.base.repo.name]]/[[pullRequest.number]]/setstatus/[[sendStatus]]"
+      handle-as="json"></iron-ajax>
+
     <list-item-label type="box" title="status">[[status]]</list-item-label>
     <paper-dropdown-menu label="Set status" value="{{status}}">
       <paper-menu class="dropdown-content">
@@ -64,11 +69,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: String,
           notify: true
         },
+        sendStatus: String,
         pullRequest: Object
       },
-      observers: ['_resetStatus(pullRequest)'],
+      observers: ['_resetStatus(pullRequest)',
+                  '_parseStatus(status)'],
       _resetStatus: function() {
         this.status = 'No reviewer assigned';
+      },
+      _parseStatus: function(status) {
+        if(status.replace(/\s/g, '') !== '') {
+          this.sendStatus = status.split(' ').join('_');
+          this.$.setPrStatus.generateRequest();
+        }
       }
     });
   </script>
