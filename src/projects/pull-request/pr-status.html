@@ -29,6 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 
 <link rel="import" href="../../list-items/list-item-label.html">
 <dom-module id="pr-status">
@@ -45,6 +46,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       id="setPrStatus"
       url="https://localhost:8443/pr/[[pullRequest.base.repo.owner.login]]/[[pullRequest.base.repo.name]]/[[pullRequest.number]]/setstatus/[[sendStatus]]"
       handle-as="json"></iron-ajax>
+
+      <firebase-document
+        app-name="preview-code"
+        path="/pulls/[[pullRequest.base.repo.owner.login]]/[[pullRequest.base.repo.name]]/branch/[[encodedNumber]]"
+        data="{{retrievedStatus}}"
+        ></firebase-document>
 
     <list-item-label type="box" title="status">[[status]]</list-item-label>
     <paper-dropdown-menu label="Set status" value="{{status}}">
@@ -66,22 +73,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         },
         status: {
+          type: String
+        },
+        encodedNumber: {
           type: String,
-          notify: true
+          computed: '_encodeNumber(pullRequest)'
         },
         sendStatus: String,
         pullRequest: Object
       },
-      observers: ['_resetStatus(pullRequest)',
-                  '_parseStatus(status)'],
-      _resetStatus: function() {
-        this.status = 'No reviewer assigned';
-      },
-      _parseStatus: function(status) {
+      observers: ['_replaceSpacesStatus(status)',
+                  '_putinSpaceStatus(retrievedStatus)'],
+      _replaceSpacesStatus: function(status) {
         if(status.replace(/\s/g, '') !== '') {
           this.sendStatus = status.split(' ').join('_');
           this.$.setPrStatus.generateRequest();
         }
+      },
+      _putinSpaceStatus: function(retrievedStatus) {
+        if(retrievedStatus.status !== undefined) {
+          this.status = retrievedStatus.status.split('_').join(' ');
+        } else{
+          //If no status is set, we set the default status.
+          this.status = 'No reviewer assigned';
+        }
+      },
+      _encodeNumber: function(pullRequest) {
+        return window.btoa(pullRequest.number);
       }
     });
   </script>

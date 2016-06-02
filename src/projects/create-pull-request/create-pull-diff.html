@@ -85,7 +85,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       behaviors: [FadeInBehavior],
       _saveStatus: function() {
-        this.$.backendcall.generateRequest();
+        if(this.project !== undefined) {
+          this.$.backendcall.generateRequest();
+        }
       }
     });
   </script>
