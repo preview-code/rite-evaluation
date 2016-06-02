@@ -39,18 +39,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       #container {
         border: black 1px solid;
-        width: 800px;
-        max-width: 100%;
-        min-height: 200px;
-        max-height: 400px;
+        height: 400px;
         position: absolute;
       }
       canvas {
         position: absolute;
       }
     </style>
-    <canvas id="canvas"></canvas>
-    <div id="container">
+    <div>
+      <canvas id="canvas"></canvas>
+
+      <div id="container">
+      </div>
     </div>
   </template>
   <script>
@@ -86,16 +86,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         'linked-from-or-to': '_maybeCreateLink'
       },
       attached: function() {
-        var self = this;
-        window.addEventListener('resize', function() {
-          self._blocks.forEach(function(block) {
-            block._originalPosition = block.getBoundingClientRect();
-            self._updateElemTrackingPosition(block, 0, 0, self._padding);
-          });
-          self._recalcCanvas(true);
-        });
+        this.updateAfterResize();
+
+        window.addEventListener('resize', this.updateAfterResize.bind(this));
 
         setInterval(this._recalcCanvas.bind(this), 1000 / 60);
+      },
+      updateAfterResize: function() {
+        if (!this.isAttached) {
+          return;
+        }
+        this.$.container.style.width = Math.min(800, this.parentNode.getBoundingClientRect().width / 2 - 100) + 'px';
+
+        this._blocks.forEach(function(block) {
+          block._originalPosition = block.getBoundingClientRect();
+          this._updateElemTrackingPosition(block, 0, 0, this._padding);
+        }.bind(this));
+
+        this._recalcCanvas(true);
       },
       _createBlocks: function(groups) {
         this._blocks = [];
