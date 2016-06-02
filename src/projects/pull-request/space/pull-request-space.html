@@ -39,7 +39,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       #container {
         border: black 1px solid;
-        width: 1000px;
+        width: 800px;
         max-width: 100%;
         min-height: 200px;
         max-height: 400px;
@@ -66,6 +66,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           valu: function() {
             return [];
           }
+        },
+        _padding: {
+          type: Number,
+          value: 5
         }
       },
       get canvas() {
@@ -82,9 +86,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         'linked-from-or-to': '_maybeCreateLink'
       },
       attached: function() {
+        var self = this;
         window.addEventListener('resize', function() {
-          this._recalcCanvas(true);
-        }.bind(this));
+          self._blocks.forEach(function(block) {
+            block._originalPosition = block.getBoundingClientRect();
+            self._updateElemTrackingPosition(block, 0, 0, self._padding);
+          });
+          self._recalcCanvas(true);
+        });
 
         setInterval(this._recalcCanvas.bind(this), 1000 / 60);
       },
@@ -255,21 +264,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
       },
-      _updateElemTrackingPosition: function(lastElem, event, padding) {
+      _updateElemTrackingPosition: function(lastElem, dy, dx, padding) {
         var rect = this.containerRect;
 
         // Position the element to the new y position based on its original
         // position, the delta from the original position.
         //
         // The position is bounded to the container rectangle with a padding
-        var newTop = lastElem._originalPosition.top + event.dy;
+        var newTop = lastElem._originalPosition.top + dy;
         var bottomBoundary = rect.bottom - lastElem._originalPosition.height - padding;
         var topBoundedToBottom = Math.min(newTop, bottomBoundary);
         var topBoundedtoYAndBottom = Math.max(rect.top + padding, topBoundedToBottom) - rect.top;
         lastElem.style.top = topBoundedtoYAndBottom + 'px';
 
         // Same for the x position as pointed out above
-        var newLeft = lastElem._originalPosition.left + event.dx;
+        var newLeft = lastElem._originalPosition.left + dx;
         var rightBoundary = rect.right - lastElem._originalPosition.width - padding;
         var leftBoundedtoRight = Math.min(newLeft, rightBoundary);
         var leftBoundedToLeftAndRight = Math.max(rect.left + padding, leftBoundedtoRight) - rect.left;
@@ -277,7 +286,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _handleCardTracking: (function() {
         var lastElem;
-        var PADDING = 5;
 
         return function(e) {
           var event = e.detail.event;
@@ -293,7 +301,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               break;
 
             case 'track':
-              this._updateElemTrackingPosition(lastElem, event, PADDING);
+              this._updateElemTrackingPosition(lastElem, event.dy, event.dx, this._padding);
               break;
 
             case 'end':

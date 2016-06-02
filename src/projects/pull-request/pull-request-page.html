@@ -113,6 +113,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin: 0 auto;
         width: 75%;
       }
+      iron-pages[wide] {
+        max-width: 1800px;
+        width: 100%;
+        margin: 0 20px;
+      }
       iron-pages {
         margin-bottom: 2em;
       }
@@ -161,14 +166,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       </paper-tabs>
     </div>
 
-    <iron-pages selected="[[page.page]]"
-                attr-for-selected="data-route"
-                fallback-selection="404">
+    <iron-pages
+        selected="[[page.page]]"
+        attr-for-selected="data-route"
+        fallback-selection="404"
+        wide$="[[spaceShown]]">
       <pull-request-general-information data-route="overview" class="overview"
         pull-request="[[selectedPull]]" project="[[project]]"></pull-request-general-information>
       <pull-request-commits data-route="commits" pull-request="[[selectedPull]]" project="[[project]]"></pull-request-commits>
       <pull-request-changes data-route="diff" diff="[[diff]]" ordering="[[ordering]]"
-          base-url="[[selectedPull.head.repo.html_url]]" sha="[[selectedPull.head.sha]]"></pull-request-changes>
+          base-url="[[selectedPull.head.repo.html_url]]" sha="[[selectedPull.head.sha]]"
+          show-space="{{spaceShown}}"></pull-request-changes>
 
       <span data-route="404">
         Oops you hit a 404!
@@ -192,6 +200,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           computed: '_computeOrderingPath(project, selectedPull)'
         }
       },
+      listeners: {
+        'scroll-to': '_scrollTo'
+      },
       _fetchDiff: function(pullRequest) {
         if (pullRequest) {
           this.$.ajaxDiff.generateRequest();
@@ -199,6 +210,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _computeOrderingPath: function(project, selectedPull) {
         return ('ordering/' + project.owner + '/' + project.name + '/' + selectedPull.number).toLowerCase();
+      },
+      _scrollTo: function(e) {
+        this.scrollTop = e.detail.top;
       }
     });
   </script>

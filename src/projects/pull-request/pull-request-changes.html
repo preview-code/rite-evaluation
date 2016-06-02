@@ -19,13 +19,14 @@
       }
     </style>
     <header>
-      <paper-button raised on-tap="_showView">Show 2D view</paper-button>
+      <paper-button raised on-tap="_showView" hidden$="[[showSpace]]">Show 2D view</paper-button>
+      <paper-button raised on-tap="_hideView" hidden$="[[!showSpace]]">Hide 2D view</paper-button>
     </header>
     <div class="container">
-      <pull-request-space data-route="space" groups="[[orderedGroups]]" hidden$="[[!_showSpace]]"></pull-request-space>
-      <pull-request-diff data-route="diff" diff="[[diff]]" ordering="[[ordering]]"
-          ordered-groups="{{orderedGroups}}"
-          base-url="[[selectedPull.head.repo.html_url]]" sha="[[selectedPull.head.sha]]"></pull-request-diff>
+      <pull-request-space data-route="space" groups="[[orderedGroups]]" hidden$="[[!showSpace]]"></pull-request-space>
+      <pull-request-diff id="diff" data-route="diff" diff="[[diff]]"
+          ordering="[[ordering]]" ordered-groups="{{orderedGroups}}"
+          base-url="[[baseUrl]]" sha="[[sha]]"></pull-request-diff>
     </div>
   </template>
   <script>
@@ -37,13 +38,27 @@
         baseUrl: String,
         sha: String,
         orderedGroups: Array,
-        _showSpace: {
+        showSpace: {
           type: Boolean,
-          value: false
+          value: false,
+          notify: true
         }
       },
+      observers: [
+        '_hideView(baseUrl)'
+      ],
+      listeners: {
+        'jump-to-group': 'jumpToGroup'
+      },
       _showView: function() {
-        this._showSpace = true;
+        this.showSpace = true;
+        this.fire('force-hide-list');
+      },
+      _hideView: function() {
+        this.showSpace = false;
+      },
+      jumpToGroup: function(e) {
+        this.$.diff.jumpToGroup(e.detail.name);
       }
     });
   </script>
