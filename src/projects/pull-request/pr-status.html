@@ -77,10 +77,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         status: {
           type: String
         },
-        encodedNumber: {
-          type: String,
-          computed: '_encodeNumber(pullRequest)'
-        },
         sendStatus: String,
         pullRequest: Object,
         project: Object,
@@ -100,7 +96,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.retrievedStatus = e.detail.value;
       },
       _updateStatusPath: function(pullRequest) {
-        return '/pulls/' + this.project.owner + '/' + this.project.name + '/branch/' + this.encodedNumber + '/status';
+        return '/pulls/' + this.project.owner + '/' + this.project.name + '/branch/' + pullRequest.number + '/status';
       },
       _updateBackendPath: function(pullRequest) {
         return 'https://localhost:8443/pr/' + this.project.owner + '/' + this.project.name + '/' + pullRequest.number + '/status';
@@ -116,9 +112,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _setStatus: function(retrievedStatus) {
         this.status = (typeof retrievedStatus !== 'object') ? retrievedStatus : 'No reviewer assigned';
-      },
-      _encodeNumber: function(pullRequest) {
-        return window.btoa(pullRequest.number);
       }
     });
   </script>

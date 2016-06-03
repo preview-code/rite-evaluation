@@ -91,6 +91,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-response="_showPullRequestInformation"
       ></github-authenticated-ajax>
 
+      <iron-ajax
+        id="createPull"
+        method="POST"
+        url="[[backendPathCreate]]"
+        headers='{"Content-Type": "application/json"}'
+        handle-as="json"
+        last-response="{{number}}"
+        on-response="_setStatus"
+        ></iron-ajax>
+
+      <iron-ajax
+        id="setPrStatusafterCreate"
+        method="POST"
+        url="[[backendPathStatus]]"
+        headers='{"Content-Type": "application/json"}'
+        handle-as="json"></iron-ajax>
+
     <div class="inputs">
       <div class="selectBranches">
         <h2>Choose branches to create a pull request on</h2>
@@ -107,8 +124,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <project-create-pull-request-description
         id="description"
         project="[[project]]"
-        title$="[[title]]"
-        description="[[description]]"
+        title="{{title}}"
+        description="{{description}}"
         ></project-create-pull-request-description>
     </div>
 
@@ -120,6 +137,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       base-url="https://github.com/[[project.owner]]/[[project.name]]"
       sha="[[headBranch]]"
       project="[[project]]"
+      title="[[title]]"
+      description="[[description]]"
       ></project-create-pull-diff>
   </template>
   <script>
@@ -142,12 +161,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         branchNames: {
           type: Array,
           computed: '_branchNames(branches)'
-        }
+        },
+        backendPathCreate: {
+          type: String,
+          computed: '_updateBackendPathCreate(title, headBranch, baseBranch)'
+        },
+        backendPathStatus: {
+          type: String,
+          computed: '_updateBackendPathStatus(project, number)'
+        },
+        number: Number
       },
       observers: [
         '_fetchBranchesAndCollaborators(project)',
         '_fetchDiff(baseBranch, headBranch)'
       ],
+      listeners: {
+        'create-pr' : '_createPullRequest'
+      },
       _fetchBranchesAndCollaborators: function() {
         this.$.ajaxBranches.generateRequest();
         this.$.ajaxCollaborators.generateRequest();
@@ -168,6 +199,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _showPullRequestInformation: function() {
         this.$.diffView.show();
         this.$.description.show();
+      },
+      _createPullRequest: function(){
+        console.log(this.description);
+        this.$.createPull.body = {
+          title: this.title,
+          description: this.description
+        };
+        this.$.createPull.generateRequest();
+      },
+      _updateBackendPathCreate: function(title, headBranch, baseBranch) {
+        return 'https://localhost:8443/project/createPR' + '/' + headBranch + '/' + baseBranch;
+      },
+      _updateBackendPathStatus: function(project, number) {
+        return 'https://localhost:8443/pr/' + this.project.owner + '/' + this.project.name + '/' + this.number + '/status';
+      },
+      _setStatus: function(){
+        if(this.number !== 0){
+          this.$.setPrStatusafterCreate.body = {
+            status: 'No reviewer assigned'
+          };
+          this.$.setPrStatusafterCreate.generateRequest();
+        }
       }
     });
   </script>
