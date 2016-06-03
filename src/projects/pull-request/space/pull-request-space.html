@@ -87,10 +87,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       attached: function() {
         this.updateAfterResize();
+        this._updateMousePosition = this._updateMousePosition.bind(this);
+        this.updateAfterResize = this.updateAfterResize.bind(this);
+        this._recalcCanvas = this._recalcCanvas.bind(this);
+        this._maybeCancelLinking = this._maybeCancelLinking.bind(this);
 
-        window.addEventListener('resize', this.updateAfterResize.bind(this));
+        window.addEventListener('resize', this.updateAfterResize);
 
-        setInterval(this._recalcCanvas.bind(this), 1000 / 60);
+        setInterval(this._recalcCanvas, 1000 / 60);
       },
       updateAfterResize: function() {
         if (!this.isAttached) {
@@ -120,35 +124,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           this._blocks.push(elem);
         }
       },
-      _maybeCreateLink: (function() {
-        // New function to make sure we can remove the listener later to
-        // preserve memory
-        function updateMousePosition(e) {
-          this._mouseX = e.clientX;
-          this._mouseY = e.clientY;
+      // New functions to make sure we can remove the listener later to
+      // preserve memory
+      _updateMousePosition: function updateMousePosition(e) {
+        this._mouseX = e.clientX;
+        this._mouseY = e.clientY;
+        this._recalcCanvas(true);
+      },
+      _maybeCancelLinking: function(e) {
+        // Escape key
+        if (e.keyCode === 27) {
+          delete this._previousCard;
           this._recalcCanvas(true);
         }
-
-        return function(e) {
-          var card = e.detail;
-          if (this._previousCard) {
-            var exists = this._previousCard.connections.filter(function(c) {
-              return c.id === card.blockId;
-            });
-            if (!exists.length && this._previousCard.blockId !== card.blockId) {
-              this._previousCard.push('connections', {
-                id: card.blockId
-              });
-            }
-            delete this._previousCard;
-            window.removeEventListener('mousemove', updateMousePosition);
-            this._recalcCanvas(true);
-          } else {
-            window.addEventListener('mousemove', updateMousePosition.bind(this));
-            this._previousCard = card;
-          }
+      },
+      _createLink: function(card) {
+        var exists = this._previousCard.connections.filter(function(c) {
+          return c.id === card.blockId;
+        });
+        if (!exists.length && this._previousCard.blockId !== card.blockId) {
+          this._previousCard.push('connections', {
+            id: card.blockId
+          });
         }
-      })(),
+        this._previousCard.linkText = 'Link';
+        delete this._previousCard;
+        window.removeEventListener('mousemove', this._updateMousePosition);
+        window.removeEventListener('keydown', this._maybeCancelLinking);
+        this._recalcCanvas(true);
+      },
+      _maybeCreateLink: function(e) {
+        var card = e.detail;
+        if (this._previousCard) {
+          this._createLink(card);
+        } else {
+          window.addEventListener('mousemove', this._updateMousePosition);
+          window.addEventListener('keydown', this._maybeCancelLinking);
+          card.linkText = 'Stop';
+          this._previousCard = card;
+        }
+      },
       _calculateAnchorPoints: function(rectangleLeft, rectangleRight, dx, dy, containerRect) {
         var points = {};
 
