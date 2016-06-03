@@ -113,11 +113,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin: 0 auto;
         width: 75%;
       }
-      iron-pages[wide] {
-        max-width: 1800px;
-        width: 95%;
-        margin: 0 20px;
-      }
       iron-pages {
         margin-bottom: 2em;
       }
@@ -169,14 +164,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <iron-pages
         selected="[[page.page]]"
         attr-for-selected="data-route"
-        fallback-selection="404"
-        wide$="[[spaceShown]]">
+        fallback-selection="404">
       <pull-request-general-information data-route="overview" class="overview"
         pull-request="[[selectedPull]]" project="[[project]]"></pull-request-general-information>
       <pull-request-commits data-route="commits" pull-request="[[selectedPull]]" project="[[project]]"></pull-request-commits>
       <pull-request-changes data-route="diff" diff="[[diff]]" ordering="[[ordering]]"
-          base-url="[[selectedPull.head.repo.html_url]]" sha="[[selectedPull.head.sha]]"
-          show-space="{{spaceShown}}"></pull-request-changes>
+          base-url="[[selectedPull.head.repo.html_url]]"
+          sha="[[selectedPull.head.sha]]"></pull-request-changes>
 
       <span data-route="404">
         Oops you hit a 404!

@@ -7,6 +7,16 @@
     <style>
       :host {
         display: block;
+        will-change: left;
+        left: 0;
+        width: 95%;
+      }
+      :host([show-space]) {
+        position: absolute;
+        left: 80px;
+      }
+      :host([show-space]) pull-request-space {
+        width: 45%;
       }
       [hidden] {
         display: none !important;
@@ -16,7 +26,6 @@
       }
       pull-request-space, pull-request-diff {
         flex: 1;
-        width: 45%;
       }
     </style>
     <header>
@@ -43,7 +52,7 @@
         showSpace: {
           type: Boolean,
           value: false,
-          notify: true
+          reflectToAttribute: true
         }
       },
       observers: [
