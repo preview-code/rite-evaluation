@@ -177,7 +177,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         '_fetchDiff(baseBranch, headBranch)'
       ],
       listeners: {
-        'create-pr' : '_createPullRequest'
+        'create-pr': '_createPullRequest'
       },
       _fetchBranchesAndCollaborators: function() {
         this.$.ajaxBranches.generateRequest();
@@ -200,7 +200,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.$.diffView.show();
         this.$.description.show();
       },
-      _createPullRequest: function(){
+      _createPullRequest: function() {
         console.log(this.description);
         this.$.createPull.body = {
           title: this.title,
@@ -212,10 +212,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return 'https://localhost:8443/project/createPR' + '/' + headBranch + '/' + baseBranch;
       },
       _updateBackendPathStatus: function(project, number) {
-        return 'https://localhost:8443/pr/' + this.project.owner + '/' + this.project.name + '/' + this.number + '/status';
+        return 'https://localhost:8443/pr/' + this.project.owner + '/' + this.project.name + '/' + number + '/status';
       },
-      _setStatus: function(){
-        if(this.number !== 0){
+      _setStatus: function() {
+        if(this.number !== 0) {
           this.$.setPrStatusafterCreate.body = {
             status: 'No reviewer assigned'
           };
