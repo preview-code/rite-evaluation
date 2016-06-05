@@ -15,9 +15,6 @@
         position: absolute;
         left: 80px;
       }
-      :host([show-space]) pull-request-space {
-        width: 45%;
-      }
       [hidden] {
         display: none !important;
       }
@@ -26,6 +23,12 @@
       }
       pull-request-space, pull-request-diff {
         flex: 1;
+        max-width: 100%;
+      }
+      :host([show-space]) pull-request-space,
+      :host([show-space]) pull-request-diff {
+        width: 45%;
+        flex: none;
       }
     </style>
     <header>
