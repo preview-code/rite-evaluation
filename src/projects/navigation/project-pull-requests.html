@@ -168,7 +168,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _filter: function(pullrequests, status, searchWord) {
         if (status !== 'All') {
-          return pullrequests.filter(function(e) {
+          pullrequests = pullrequests.filter(function(e) {
             return e.status === status;
           });
         }
