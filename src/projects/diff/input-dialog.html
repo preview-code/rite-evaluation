@@ -31,10 +31,10 @@
       }
     </style>
     <paper-dialog id="addGroupDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
-      <paper-input id="titleInput" label="[[label]]"></paper-input>
+      <paper-input id="input" label="[[label]]"></paper-input>
       <div class="buttons">
-        <paper-button autofocus dialog-confirm>OK</paper-button>
-        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button id="ok" autofocus dialog-confirm>OK</paper-button>
+        <paper-button id="cancel" dialog-dismiss>Cancel</paper-button>
       </div>
     </paper-dialog>
 
@@ -51,14 +51,14 @@
         'iron-overlay-closed': '_dialogClosed'
       },
       open: function() {
-        this.$.titleInput.value = '';
+        this.$.input.value = '';
         this.$.addGroupDialog.open();
       },
       _focusNewGroupInput: function() {
-        this.$.titleInput.focus();
+        this.$.input.focus();
       },
       _dialogClosed: function(e) {
-        var title = this.$.titleInput.value
+        var title = this.$.input.value
         if (e.detail.confirmed && !e.detail.canceled && title != '') {
           this.fire('confirm', title);
         } else {

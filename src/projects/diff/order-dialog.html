@@ -100,9 +100,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           group: this.actionTitle + '-group',
           ghostClass: 'ghost',
           animation: 300,
-          setData: function(dataTransfer, dragEl) {
-            dataTransfer.setDragImage(new Image(), 0, 0);
-          }
+          setData: this._setDragImage
         });
         this.$.sortable.addEventListener('update', this._orderUpdated.bind(this));
       },
@@ -112,6 +110,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       open: function() {
         this.$.dialog.open();
+      },
+      _setDragImage: function(dataTransfer, dragEl) {
+        dataTransfer.setDragImage(new Image(), 0, 0);
       }
     });
   </script>
