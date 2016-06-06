@@ -157,7 +157,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         backendPath: {
           type: String,
-          computed: '_updateBackendPath(title, headBranch, baseBranch)'
+          computed: '_updateBackendPath(title, project, headBranch, baseBranch)'
         }
       },
       observers: [
@@ -195,8 +195,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         };
         this.$.createPull.generateRequest();
       },
-      _updateBackendPath: function(title, headBranch, baseBranch) {
-        return 'https://localhost:8443/project/createPR' + '/' + headBranch + '/' + baseBranch;
+      _updateBackendPath: function(title, project, headBranch, baseBranch) {
+        return 'https://localhost:8443/project/' + project.owner + '/' + project.name + '/createPR/' + headBranch + '/' + baseBranch;
       },
       _madePulls: function() {
         if (this.number.number !== 0) {
