@@ -155,10 +155,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         Polymer.dom(this.$.afterColumn).innerHTML = afterContent;
       },
       attached: function() {
-          this._render(this.hunk.changes);
-          var img = new Image();
-          img.src = 'data:image/svg+xml;char-set=utf-8,' + this.$.ghost.getSVG();
-          this.hunk.img = img;
+          if (this.hunk) {
+            this._render(this.hunk.changes);
+            var img = new Image();
+            img.src = 'data:image/svg+xml;char-set=utf-8,' + this.$.ghost.getSVG();
+            this.hunk.img = img;
+          }
       },
       _render: function(code) {
         this.async(function() {
