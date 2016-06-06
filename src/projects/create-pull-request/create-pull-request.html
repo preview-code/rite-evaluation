@@ -94,19 +94,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <iron-ajax
         id="createPull"
         method="POST"
-        url="[[backendPathCreate]]"
+        url="[[backendPath]]"
         headers='{"Content-Type": "application/json"}'
         handle-as="json"
         last-response="{{number}}"
-        on-response="_setStatus"
+        on-response="_madePulls"
         ></iron-ajax>
-
-      <iron-ajax
-        id="setPrStatusafterCreate"
-        method="POST"
-        url="[[backendPathStatus]]"
-        headers='{"Content-Type": "application/json"}'
-        handle-as="json"></iron-ajax>
 
     <div class="inputs">
       <div class="selectBranches">
@@ -162,15 +155,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Array,
           computed: '_branchNames(branches)'
         },
-        backendPathCreate: {
+        backendPath: {
           type: String,
-          computed: '_updateBackendPathCreate(title, headBranch, baseBranch)'
-        },
-        backendPathStatus: {
-          type: String,
-          computed: '_updateBackendPathStatus(project, number)'
-        },
-        number: Number
+          computed: '_updateBackendPath(title, headBranch, baseBranch)'
+        }
       },
       observers: [
         '_fetchBranchesAndCollaborators(project)',
@@ -201,25 +189,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.$.description.show();
       },
       _createPullRequest: function() {
-        console.log(this.description);
         this.$.createPull.body = {
           title: this.title,
           description: this.description
         };
         this.$.createPull.generateRequest();
       },
-      _updateBackendPathCreate: function(title, headBranch, baseBranch) {
+      _updateBackendPath: function(title, headBranch, baseBranch) {
         return 'https://localhost:8443/project/createPR' + '/' + headBranch + '/' + baseBranch;
       },
-      _updateBackendPathStatus: function(project, number) {
-        return 'https://localhost:8443/pr/' + this.project.owner + '/' + this.project.name + '/' + number + '/status';
-      },
-      _setStatus: function() {
-        if(this.number !== 0) {
-          this.$.setPrStatusafterCreate.body = {
-            status: 'No reviewer assigned'
-          };
-          this.$.setPrStatusafterCreate.generateRequest();
+      _madePulls: function() {
+        if (this.number.number !== 0) {
+          var location = '/projects/' + this.project.owner + '/' + this.project.name + '/pulls/' + this.number.number + '/overview'
+          window.location.assign(location);
         }
       }
     });
