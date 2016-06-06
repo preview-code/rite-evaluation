@@ -161,7 +161,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         });
       },
       _reorderGroups: function() {
-        console.log('reorder plz');
+        // console.log('reorder plz');
       },
       _groupsOrdered: function(orderedGroups, editable) {
         var groups = orderedGroups.base;
@@ -178,19 +178,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.$.sorter.addGroup(e.detail);
       },
       _groupAdded: function(e) {
-        console.log('added group', e);
+        // console.log('added group', e);
       },
       _groupRemoved: function(e) {
-        console.log('removed group', e);
+        // console.log('removed group', e);
       },
       _groupUpdate: function(e) {
-        console.log('updated group', e);
+        // console.log('updated group', e);
       },
       _groupEmpty: function(e) {
-        console.log('group is now empty', e.detail.groupName);
+        // console.log('group is now empty', e.detail.groupName);
       },
       _groupMove: function(e) {
-        console.log('moved group', e);
+        // console.log('moved group', e);
       }
     });
   </script>
