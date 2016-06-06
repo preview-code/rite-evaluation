@@ -59,7 +59,7 @@
       },
       _dialogClosed: function(e) {
         var title = this.$.input.value
-        if (e.detail.confirmed && !e.detail.canceled && title != '') {
+        if (e.detail.confirmed && !e.detail.canceled && title !== '') {
           this.fire('confirm', title);
         } else {
           this.fire('cancel');

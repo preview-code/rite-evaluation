@@ -74,11 +74,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       test('fires `confirm` when clicking the confirm button', function(done) {
         inputDialog.addEventListener('confirm', function(evt) {
-          assert.equal("Value!", evt.detail);
+          assert.equal('Value!', evt.detail);
           done();
         });
         inputDialog.open();
-        Polymer.dom(inputDialog.root).querySelector('#input').value = "Value!";
+        Polymer.dom(inputDialog.root).querySelector('#input').value = 'Value!';
         Polymer.dom(inputDialog.root).querySelector('#ok').click();
       });
 
@@ -87,7 +87,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           done();
         });
         inputDialog.open();
-        Polymer.dom(inputDialog.root).querySelector('#input').value = "Value!";
+        Polymer.dom(inputDialog.root).querySelector('#input').value = 'Value!';
         Polymer.dom(inputDialog.root).querySelector('#cancel').click();
       });
 

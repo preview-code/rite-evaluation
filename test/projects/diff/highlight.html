@@ -50,12 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <script>
   /*global testDiffs*/
     suite('<pull-request-diff-highlight>', function() {
-      var diffElem;
-      setup(function() {
-        replace('collapse-icon').with('stub-collapse-icon');
-        diffElem = fixture('basic');
-      });
-
       test('renders when attached', function(done) {
         var elem = document.createElement('pull-request-diff-highlight');
         elem.hunk = testDiffs[0];

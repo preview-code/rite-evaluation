@@ -165,7 +165,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _groupsOrdered: function(orderedGroups, editable) {
         var groups = orderedGroups.base;
-        if (this.editable && !this._sortable &&
+        if (editable && !this._sortable &&
             groups && groups[0].diff.length > 0) {
           this._sortable = true;
           this.$.hunkGroups.addEventListener('add', this._groupAdded.bind(this));

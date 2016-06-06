@@ -67,7 +67,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         var causeEvent = new Event('');
         causeEvent.oldIndex = 42;
         causeEvent.newIndex = -42;
-        var expectedEvent = new CustomEvent('order', { 'detail': { oldIndex: 42, newIndex: -42 } });
+        var expectedEvent = new CustomEvent('order', {'detail': {oldIndex: 42, newIndex: -42}});
 
         orderDialog.addEventListener('order', function(e) {
           assert.deepEqual(expectedEvent.detail, e.detail);
@@ -79,7 +79,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       test('calls _orderUpdated when sortable fires `update`', function(done) {
         var causeEvent = new Event('update');
-        orderDialog.addEventListener('order', function(e) {
+        orderDialog.addEventListener('order', function() {
           done();
         });
         Polymer.dom(orderDialog.root).querySelector('#sortable').dispatchEvent(causeEvent);
