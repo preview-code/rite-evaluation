@@ -71,6 +71,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       id="ajaxPullRequest"
       refurl="https://api.github.com/repos/[[projectTitle.owner]]/[[projectTitle.name]]/pulls?state=[[prStateFilter]]"
       page="[[pullRequestPagination]]"
+      debounce-duration="300"
       on-response="_appendPullRequests"></github-authenticated-ajax>
 
     <github-authenticated-ajax
@@ -157,6 +158,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           return;
         }
 
+        if (this.activeProject && this.activeProject.owner === owner && this.activeProject.name === name) {
+          return;
+        }
+
         var project = projects.filter(function(p) {
           return p.owner.login === owner && p.name === name;
         })[0];
@@ -169,6 +174,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           name: project.name
         };
 
+        this.pullRequestPagination = 1;
+        this._lastPage = undefined;
         this.$.ajaxPullRequest.generateRequest();
         this.pullrequests = [];
       },
@@ -176,13 +183,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.$$('project-overview-page').focus();
       },
       _getPullFromId: function(pullrequests, id) {
+        if (!id) {
+          return;
+        }
         var list = pullrequests.filter(function(pr) {
           return pr.number === parseInt(id);
         });
         if (list.length > 0) {
+          this._lastId = id;
           return list[0];
         }
-        this.$.ajaxCustomPullRequest.generateRequest();
+
+        if (this._lastId === id) {
+          return;
+        }
+        this._lastId = id;
+
+        if (this.$.ajaxCustomPullRequest.refurl.match(id + '$')) {
+          this.$.ajaxCustomPullRequest.generateRequest();
+        }
       },
       _getCurrentView: function(projectSelected, pullRequestSelected) {
         if (!projectSelected) {
@@ -213,8 +232,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.push('pullrequests', newPullrequest);
       },
       _appendPullRequests: function(e) {
+        var response = e.detail.response;
         // Event was fired twice, ignore this one
-        if (this._lastPRResponse === e.detail.response) {
+        if (this._lastPRResponse === response) {
           return;
         }
         // To enable pagination, we must retrieve the maximum page
@@ -228,16 +248,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             this._lastPage = lastPage[1];
           }
         }
-        this._lastPRResponse = e.detail.response;
-        Array.prototype.unshift.apply(e.detail.response, this.pullrequests);
-        this.notifyPath('pullrequests', e.detail.response);
+        this._lastPRResponse = response;
+        Array.prototype.unshift.apply(response, this.pullrequests);
+        this.notifyPath('pullrequests', response);
       },
       _incrementPageAndRetrievePRs: function(e) {
         if (!this.pullrequests.length) {
           return;
         }
         this.pullRequestPagination = this.pullRequestPagination + 1;
-        if (this.pullRequestPagination <= this._lastPage) {
+        if (!this._lastPage || this.pullRequestPagination <= this._lastPage) {
           this.$.ajaxPullRequest.generateRequest();
         }
       }
