@@ -73,7 +73,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       test('filter list when searching', function(done) {
         listNavigation.searchWord = 'hello';
         flush(function() {
-          var outcome = listNavigation.querySelectorAll('project-list-item');
+          var outcome = Polymer.dom(listNavigation.root).querySelectorAll('project-list-item');
           assert.equal(outcome.length, 1);
           assert.deepEqual(listNavigation.projects[0], outcome[0].project);
           done();
@@ -83,7 +83,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       test('show whole list when no searchword is chosen', function(done) {
         listNavigation.searchWord = '';
         flush(function() {
-          var outcome = listNavigation.querySelectorAll('project-list-item');
+          var outcome = Polymer.dom(listNavigation.root).querySelectorAll('project-list-item');
           assert.equal(outcome.length, 2);
           assert.deepEqual(listNavigation.projects, Array.prototype.slice.call(outcome).map(function(e) {
             return e.project;
