@@ -163,9 +163,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if (!project) {
           return;
         }
-        project.owner = project.owner.login;
 
-        this.activeProject = project;
+        this.activeProject = {
+          owner: project.owner.login,
+          name: project.name
+        };
 
         this.$.ajaxPullRequest.generateRequest();
         this.pullrequests = [];
