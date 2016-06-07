@@ -40,6 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: 100%;
         display: flex;
         flex-direction: row;
+        overflow-y: hidden;
       }
       [hidden] {
         display: none !important;
@@ -47,6 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       pull-request-diff {
         max-width: 100%;
         z-index: 1;
+        will-change: max-width;
       }
       :host([show-space]) pull-request-diff {
         flex: 1;

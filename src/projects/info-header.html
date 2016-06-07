@@ -37,14 +37,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding-top: 2em;
         color: var(--primary-text-color);
         z-index: 1;
+        will-change: width;
       }
-      :host,
       :host header {
-        -webkit-transition: all 0.5s ease;
-        -moz-transition: all 0.5s ease;
-        -ms-transition: all 0.5s ease;
-        -o-transition: all 0.5s ease;
-        transition: all 0.5s ease;
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        transition: all 0.3s ease;
       }
       :host([collapsed]) {
         -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.25);
