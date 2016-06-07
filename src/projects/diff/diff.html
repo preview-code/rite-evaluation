@@ -95,7 +95,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <div id="hunkGroups">
       <template is="dom-repeat" items="[[orderedGroups]]">
-        <pull-request-group group="[[item]]" editable="[[editable]]"></pull-request-group>
+        <pull-request-group group="[[item]]" editable="[[editable]]" project="[[project]]"
+        number="[[number]]" project="[[project]]" url="[[baseUrl]]"></pull-request-group>
       </template>
     </div>
 
@@ -127,9 +128,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         baseUrl: String,
         sha: String,
+        number: Number,
         additions: Number,
         deletions: Number,
         diff: String,
+        project: Object,
         hunks: {
           type: Array,
           value: function() {

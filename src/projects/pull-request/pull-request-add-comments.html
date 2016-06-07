@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../util/markdown-input.html">
 
 <dom-module id="pull-request-add-comments">
@@ -50,6 +51,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 150px;
       }
     </style>
+    <iron-ajax
+      id="postPRComment"
+      method="POST"
+      url="[[backendPath]]/pr"
+      headers='{"Content-Type": "application/json"}'
+      on-response="_setComments"
+      ></iron-ajax>
+
+    <iron-ajax
+     id="postGroupComment"
+     method="POST"
+     url="[[backendPath]]/group"
+     headers='{"Content-Type": "application/json"}'
+     on-response="_setComments"
+     ></iron-ajax>
+
     <markdown-input markdown="{{newtext}}" label="Leave a comment."></markdown-input>
     <paper-button raised class="button" on-tap="_addComment">New comment</paper-button>
   </template>
@@ -61,19 +78,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: String,
           value: ''
         },
-        comments: Array
+        comments: {
+          type: Array,
+          notify: true
+        },
+        backendPath: {
+          type: String,
+          computed: '_updateBackendPath(project, number)'
+        },
+        project: Object,
+        number: Number,
+        group: Object
       },
       _addComment: function() {
-        var newComment = {};
         if (this.newtext.replace(/\s/g, '') !== '') {
-          newComment.body = this.newtext;
-          newComment.user = {
-            login: 'Eva'
+          if(this.group === undefined){
+            this.$.postPRComment.body = {
+              body: this.newtext
+            },
+            this.$.postPRComment.generateRequest();
           }
-          newComment.timeopened = 12345678;
-          this.push('comments', newComment);
+          else{
+            this.$.postGroupComment.body = {
+              body: this.newtext,
+              title: this.group.title
+            },
+            this.$.postGroupComment.generateRequest();
+          }
           this.newtext = '';
         }
+      },
+      _updateBackendPath: function(project, number) {
+        return 'https://localhost:8443/' + project.owner + '/' + project.name + '/pulls/' + number + '/comments';
+      },
+      _setComments: function(e) {
+        this.comments = [e.detail.response].concat(this.comments);
       }
     });
   </script>

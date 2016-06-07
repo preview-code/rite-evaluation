@@ -27,12 +27,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../util/markdown-input.html">
 <link rel="import" href="../../util/editable-title.html">
 <link rel="import" href="../../util/collapsible-content.html">
 <link rel="import" href="../../util/dom-repeat-once.html">
 <link rel="import" href="../pull-request/pull-request-add-comments.html">
 <link rel="import" href="../pull-request/pull-request-comment.html">
+<link rel="import" href="../../ajax/github-authenticated-ajax.html">
 <link rel="import" href="highlight.html">
 
 <dom-module id="pull-request-group">
@@ -134,11 +136,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         opacity: 1;
       }
     </style>
+    <github-authenticated-ajax
+      id="githubComment"
+      refurl="[[commentsPath]]"
+      last-response="{{group.comments}}"
+      on-response="_checkComments"></github-authenticated-ajax>
+
+    <firebase-document
+      app-name="preview-code"
+      path="[[commentsFbPath]]"
+      data="{{fbComments}}"
+      ></firebase-document>
+
     <collapsible-content collapse="{{collapsed}}">
       <div class="header">
         <editable-title id="editTitleDialog" editable="[[editable]]" value="{{group.info.title}}"></editable-title>
       </div>
       <div class="content">
+
         <markdown-input
           hidden$="[[hideDescription]]"
           disabled="[[!editable]]"
@@ -152,13 +167,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           <template is="dom-repeat" items="[[group.comments]]" as="comment">
             <pull-request-comment
             text="[[comment.body]]" author="[[comment.user]]"
-            date="[[comment.timeopened]]"></pull-request-comment>
+            date="[[comment.created_at]]"></pull-request-comment>
           </template>
-          <pull-request-add-comments comments="{{group.comments}}"></pull-request-add-comments>
+          <pull-request-add-comments comments="{{group.comments}}"
+          group="[[group]]" project="[[project]]" number="[[number]]"></pull-request-add-comments>
         </collapsible-content>
-      </div>
-    </collapsible-content>
-
   </template>
   <script>
     Polymer({
@@ -179,11 +192,23 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           value: false,
           reflectToAttribute: true
         },
-        _isAlreadyInitialized: Boolean
+        project: Object,
+        _isAlreadyInitialized: Boolean,
+        number: Number,
+        url: String,
+        commentsFbPath: {
+          type: String,
+          computed: '_computeCommentsFbPath(project, number)'
+        },
+        commentsPath: {
+          type: String,
+          computed: '_computeCommentsPath(project, number)'
+        },
       },
       observers: [
         '_resetCollapsed(group)',
-        '_groupChanged(group, editable)'
+        '_groupChanged(group, editable)',
+        '_fireAjax(project, number)',
       ],
       attached: function() {
         if (!this.editable && (!this.group || !this.group.info.description)) {
@@ -261,6 +286,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _resetCollapsed: function() {
         this.collapsed = false;
         this.collapseComments = true;
+      },
+      _computeCommentsFbPath: function(project, number) {
+        return '/pulls/' + project.owner + '/' + project.name + '/branch/' + number + '/comments';
+      },
+      _computeCommentsPath: function(project, number) {
+        return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/issues/' + number + '/comments';
+      },
+      _checkComments() {
+        for(var i = 0; i < this.group.comments.length; i++ ) {
+          if(this.fbComments[this.group.comments[i].id] !== this.group.title) {
+            this.group.comments.splice(i,1);
+          }
+        }
+      },
+      _fireAjax: function() {
+        this.$.githubComment.generateRequest();
       }
     });
   </script>
