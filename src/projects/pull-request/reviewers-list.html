@@ -27,6 +27,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="set-reviewers.html">
 
 <dom-module id="reviewers-list">
@@ -36,7 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display:flex;
         flex-wrap: wrap;
       }
-      .lgtm-true.false {
+      .lgtm.false {
         display: none;
       }
       iron-icon {
@@ -45,10 +46,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height:16px;
         background-color: var(--primary-action-green);
         border-radius: 13px;
-        margin-left: -13px;
-        margin-top: -13px;
       }
-      .lgtm-true {
+      .lgtm {
         fill: var(--primary-background-color);
       }
       .reviewer {
@@ -61,6 +60,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-size: 100%;
         margin: 8px auto;
       }
+      .icons {
+        position: relative;
+        top: -10px;
+        left: -10px;
+        width: calc(100% + 20px);
+      }
+      .reviewer:hover paper-icon-button {
+        display: block;
+      }
+      paper-icon-button {
+        display: none;
+        color: white;
+        background-color: var(--primary-action-red);
+        padding: 2px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        float: right;
+      }
     </style>
 
     <github-authenticated-ajax
@@ -72,8 +90,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       ></github-authenticated-ajax>
 
     <template is="dom-repeat" items="[[sortedReviewers]]" as="reviewer">
-      <div on-tap="_removeAssignee" class="reviewer" title$="[[reviewer.login]]" style$="background-image: url([[reviewer.avatar_url]]); ">
-        <iron-icon class$="lgtm-true [[reviewer.lgtm]]", icon="icons:thumb-up"></iron-icon>
+      <div class="reviewer" title$="[[reviewer.login]]" style$="background-image: url([[reviewer.avatar_url]]); ">
+        <div class="icons">
+          <iron-icon class$="lgtm [[reviewer.lgtm]]" icon="icons:thumb-up"></iron-icon>
+          <paper-icon-button on-tap="_removeAssignee" icon="icons:clear"></paper-icon-button>
+        </div>
       </div>
     </template>
     <set-reviewers pullrequest="{{pullrequest}}" project="[[project]]"></set-reviewers>
@@ -118,8 +139,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this._sortReviewers(this.pullrequest);
       },
       _removeAssignee: function(e) {
+        console.log(e);
         this.$.removeAssignees.body = {
-          assignees: [e.path[0].getAttribute('title')]
+          assignees: [e.path[4].getAttribute('title')]
         }
         this.$.removeAssignees.generateRequest();
       },
