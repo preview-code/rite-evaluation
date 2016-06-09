@@ -63,8 +63,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     </style>
 
+    <github-authenticated-ajax
+      id="removeAssignees"
+      method="DELETE"
+      refurl="[[githubPathPost]]"
+      headers='{"Accept": "application/vnd.github.cerberus-preview+json"}'
+      on-response="_removeAssingeesList"
+      ></github-authenticated-ajax>
+
     <template is="dom-repeat" items="[[sortedReviewers]]" as="reviewer">
-      <div class="reviewer" style$="background-image: url([[reviewer.avatar_url]]); ">
+      <div on-tap="_removeAssignee" class="reviewer" title$="[[reviewer.login]]" style$="background-image: url([[reviewer.avatar_url]]); ">
         <iron-icon class$="lgtm-true [[reviewer.lgtm]]", icon="icons:thumb-up"></iron-icon>
       </div>
     </template>
@@ -80,7 +88,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Object,
           notify: true
         },
-        project: Object
+        project: Object,
+        githubPathPost: {
+          type: String,
+          computed: '_githubPathPost(project, pullrequest)'
+        }
       },
       observers: [
         '_sortReviewers(pullrequest)'
@@ -96,8 +108,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           });
         }
       },
+      _githubPathPost: function(project, pullrequest) {
+        if(project !== undefined && pullrequest !== undefined) {
+          return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/issues/' + pullrequest.number + '/assignees';
+        }
+      },
+
       _resort: function() {
         this._sortReviewers(this.pullrequest);
+      },
+      _removeAssignee: function(e){
+        this.$.removeAssignees.body = {
+          assignees: [e.path[0].getAttribute('title')]
+        }
+        this.$.removeAssignees.generateRequest();
+      },
+      _removeAssingeesList: function(e){
+        this.pullrequest.assignees = e.detail.response.assignees;
+        this._resort();
       }
     });
   </script>
