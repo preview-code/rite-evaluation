@@ -124,7 +124,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         githubPath: {
           type: String,
-          computed: '_computeGithubPath(projectTitle)'
+          computed: '_computeGithubPath(projectTitle, prStateFilter)'
         },
         showProjectsList: Boolean,
         showPullList: Boolean,
@@ -178,7 +178,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           owner: project.owner.login,
           name: project.name
         };
-        if(this.githubPath){
+        if(this.githubPath) {
           this.pullRequestPagination = 1;
           this._lastPage = undefined;
           this.$.ajaxPullRequest.generateRequest();
@@ -268,9 +268,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           this.$.ajaxPullRequest.generateRequest();
         }
       },
-      _computeGithubPath: function(projectTitle) {
-        if(projectTitle.owner) {
-          return 'https://api.github.com/repos/' + [[projectTitle.owner]] + '/' + [[projectTitle.name]] + '/pulls?state=' + [[this.prStateFilter]];
+      _computeGithubPath: function(projectTitle, prStateFilter) {
+        if(projectTitle.owner && prStateFilter) {
+          return 'https://api.github.com/repos/' + [[projectTitle.owner]] + '/' + [[projectTitle.name]] + '/pulls?state=' + [[prStateFilter]];
         }
       }
     });

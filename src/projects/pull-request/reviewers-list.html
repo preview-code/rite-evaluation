@@ -90,13 +90,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _sortReviewers: function(pullrequest) {
           var rs = pullrequest.assignees;
-          if(pullrequest.assignees){
+          if(pullrequest.assignees) {
             this.sortedReviewers = rs.sort(function(r1, r2) {
               return r2.lgtm - r1.lgtm;
-            });
-          }
+          });
+        }
       },
-      _resort: function(){
+      _resort: function() {
         this._sortReviewers(this.pullrequest);
       }
     });
