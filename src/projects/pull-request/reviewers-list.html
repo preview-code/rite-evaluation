@@ -27,6 +27,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="set-reviewers.html">
 
 <dom-module id="reviewers-list">
   <template>
@@ -67,22 +68,36 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <iron-icon class$="lgtm-true [[reviewer.lgtm]]", icon="icons:thumb-up"></iron-icon>
       </div>
     </template>
+    <set-reviewers pullrequest="{{pullrequest}}" project="[[project]]"></set-reviewers>
 
   </template>
   <script>
     Polymer({
       is: 'reviewers-list',
       properties: {
-        reviewers: Array,
-        sortedReviewers: {
-          type: Array,
-          computed: '_sortReviewers(reviewers)'
-        }
+        sortedReviewers: Array,
+        pullrequest: {
+          type: Object,
+          notify: true
+        },
+        project: Object
       },
-      _sortReviewers: function(rs) {
-        return rs.sort(function(r1, r2) {
-          return r2.lgtm - r1.lgtm;
-        });
+      observers: [
+        '_sortReviewers(pullrequest)'
+      ],
+      listeners: {
+        'resort': '_resort'
+      },
+      _sortReviewers: function(pullrequest) {
+          var rs = pullrequest.assignees;
+          if(pullrequest.assignees){
+            this.sortedReviewers = rs.sort(function(r1, r2) {
+              return r2.lgtm - r1.lgtm;
+            });
+          }
+      },
+      _resort: function(){
+        this._sortReviewers(this.pullrequest);
       }
     });
   </script>
