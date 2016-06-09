@@ -68,7 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       method="DELETE"
       refurl="[[githubPathPost]]"
       headers='{"Accept": "application/vnd.github.cerberus-preview+json"}'
-      on-response="_removeAssingeesList"
+      on-response="_removeAssigneesList"
       ></github-authenticated-ajax>
 
     <template is="dom-repeat" items="[[sortedReviewers]]" as="reviewer">
@@ -117,13 +117,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _resort: function() {
         this._sortReviewers(this.pullrequest);
       },
-      _removeAssignee: function(e){
+      _removeAssignee: function(e) {
         this.$.removeAssignees.body = {
           assignees: [e.path[0].getAttribute('title')]
         }
         this.$.removeAssignees.generateRequest();
       },
-      _removeAssingeesList: function(e){
+      _removeAssigneesList: function(e) {
         this.pullrequest.assignees = e.detail.response.assignees;
         this._resort();
       }
