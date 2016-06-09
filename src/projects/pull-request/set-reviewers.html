@@ -53,7 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-response="_setNewAssingees"
       ></github-authenticated-ajax>
 
-    <paper-dropdown-menu label="Add reviewer" value="{{reviewer}}" on-value-changed="_postReviewer">
+    <paper-dropdown-menu label="Add reviewer" value="{{reviewer}}">
       <paper-menu class="dropdown-content">
         <template is="dom-repeat" items="[[assignees]]" index-as="index">
           <paper-item><img height=45px src="[[item.avatar_url]]" alt="[[item.login]] user image" />[[item.login]]</paper-item>
@@ -81,7 +81,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         assignees: Array
       },
-      observers: ['_fireAjax(githubPathGet)'],
+      observers: ['_fireAjax(githubPathGet)',
+                  '_postReviewer(reviewer)'],
 
       _fireAjax: function(githubPathGet) {
         if(githubPathGet !== undefined) {
@@ -99,10 +100,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/assignees'
         }
       },
-      _postReviewer: function() {
-        if(this.githubPathPost !== undefined && this.pullrequest.assignees.indexOf(this.reviewer) === -1) {
+      _postReviewer: function(reviewer) {
+        if(this.githubPathPost !== undefined && reviewer && this.pullrequest.assignees.indexOf(reviewer) === -1) {
           this.$.postAssignees.body = {
-            assignees: [this.reviewer]
+            assignees: [reviewer]
           }
           this.$.postAssignees.generateRequest();
         }
