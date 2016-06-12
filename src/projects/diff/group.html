@@ -46,9 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         margin: 2em 0;
         padding: 1em 2em;
-        background-color: var(--primary-background-color);
-        -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-        box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
+        /*background-color: var(--primary-background-color);*/
+        /*-webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);*/
+        /*box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);*/
+        border: dashed 3px var(--secondary-text-color);
         -webkit-transition: all 0.3s ease;
         -moz-transition: all 0.3s ease;
         -ms-transition: all 0.3s ease;
@@ -101,8 +102,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         transition: all 0.4s;
         margin-bottom: 1em;
       }
-      pull-request-diff-highlight {
+      pull-request-diff-highlight.edit-mode {
         margin: -2em 0 0 0 !important;
+      }
+      pull-request-diff-highlight {
         position: relative;
         z-index: 0;
       }
@@ -123,11 +126,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: calc(100% - 50px);
         height: 2em;
         opacity: 0;
-      }
-      .drag-handle[editable] {
         cursor: pointer;
       }
-      .drag-handle[editable]::before {
+      .drag-handle::before {
         content: "";
         position: relative;
         margin: 0 auto;
@@ -138,7 +139,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-radius: 1em;
         top: 12px;
       }
-      .drag-handle[editable]:hover,
+      .drag-handle:hover,
       .hunk-ghost .drag-handle {
         opacity: 1;
       }
@@ -241,14 +242,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _createDraggableHunk: function(hunk, editable) {
         var container = document.createElement('div');
         container.setAttribute('class', 'hunk');
-        var dragHandle = document.createElement('div');
-        dragHandle.setAttribute('class', 'drag-handle');
-        if (editable) {
-          dragHandle.setAttribute('editable', 'true');
-        }
         var hunkElem = document.createElement('pull-request-diff-highlight');
         hunkElem.set('hunk', hunk);
-        container.appendChild(dragHandle);
+        if (editable) {
+          var dragHandle = document.createElement('div');
+          dragHandle.setAttribute('class', 'drag-handle');
+          container.appendChild(dragHandle);
+          hunkElem.setAttribute('class', 'edit-mode');
+        } else {
+          hunkElem.set('approvable', true);
+        }
         container.appendChild(hunkElem);
         return container;
       },
