@@ -173,7 +173,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _removeAssignee: function(e) {
         this.$.removeAssignees.body = {
-          assignees: [e.path[5].getAttribute('title')]
+          assignees: [e.model.reviewer.login]
         }
         this.$.removeAssignees.generateRequest();
       },
