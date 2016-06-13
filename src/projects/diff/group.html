@@ -156,8 +156,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             date="[[comment.created_at]]"></pull-request-comment>
           </template>
           <pull-request-add-comments comments="{{groupComments}}"
-          group="[[group]]" project="[[project]]" number="[[number]]"></pull-request-add-comments>
+          group="[[group]]" number="[[number]]"></pull-request-add-comments>
         </collapsible-content>
+      </div>
+    </collapsible-content>
   </template>
   <script>
     Polymer({
@@ -178,7 +180,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           value: false,
           reflectToAttribute: true
         },
-        project: Object,
         _isAlreadyInitialized: Boolean,
         number: Number,
         url: String,

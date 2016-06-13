@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../ajax/backend-ajax.html">
 <link rel="import" href="../../util/markdown-input.html">
 <link rel="import" href="../project-behavior.html">
 
@@ -68,6 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <paper-button raised class="button" on-tap="_addComment">New comment</paper-button>
   </template>
   <script>
+  /*global ProjectBehavior*/
     Polymer({
       is: 'pull-request-add-comments',
       behaviors: [ProjectBehavior],
@@ -112,9 +113,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _setGroupComments: function(e) {
         this.push('comments', {groupID: this.group.id, comment: e.detail.response});
-        console.log(this.comments);
       }
-
     });
   </script>
 </dom-module>

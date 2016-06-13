@@ -133,8 +133,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <section>
         <div>
           <marked-github-element markdown="[[pullRequest.body]]"></marked-github-element>
-          <pull-request-add-comments comments="{{comments}}" project="[[project]]"
-          number="[[pullRequest.number]]"></pull-request-add-comments>
+          <pull-request-add-comments comments="{{comments}}" number="[[pullRequest.number]]"></pull-request-add-comments>
         </div>
         <div class="sidebar">
           <pr-status pull-request="[[pullRequest]]"></pr-status>
@@ -156,8 +155,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       </paper-button>
     </div>
     <template is="dom-repeat" items="[[comments]]">
-      <pull-request-comment text="[[item.body]]" author="[[item.user]]"
-        date="[[item.created_at]]" project="[[project]]"></pull-request-comment>
+      <pull-request-comment text="[[item.body]]" author="[[item.user]]" date="[[item.created_at]]"></pull-request-comment>
     </template>
   </template>
   <script>
@@ -172,11 +170,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Object,
           notify: true
         },
-        project: Object,
-        commentsPath: {
-          type: String,
-          computed: '_computeCommentsPath(project, pullRequest)'
-        }
+        project: Object
       },
       observers: [
         '_fireAjax(pullRequest)',
@@ -202,16 +196,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _prHasBeenMerged: function(e) {
         console.log(e);
-    },
-      _computeCommentsPath: function(project, pullRequest) {
-        return '/pulls/' + project.owner + '/' + project.name + '/branch/' + pullRequest.number + '/comments';
-      },
-      _checkComments: function() {
-        for(var i = 0; i < this.comments.length; i++ ){
-          if(this.fbComments[this.comments[i].id] !== undefined){
-            this.comments.splice(i,1);
-          }
-        }
       }
     });
   </script>

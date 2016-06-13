@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../ajax/github-authenticated-ajax.html">
-
+<link rel="import" href="../project-behavior.html">
 
 <dom-module id="get-comments">
   <template>
@@ -13,6 +13,7 @@
     <github-authenticated-ajax
       id="githubComments"
       refurl="[[commentsGhPath]]"
+      per-page="250"
       on-response="_divideComments">
     </github-authenticated-ajax>
 
@@ -25,8 +26,10 @@
   </template>
 
   <script>
+  /*global ProjectBehavior*/
     Polymer({
       is: 'get-comments',
+      behaviors: [ProjectBehavior],
       properties: {
         commentsFbPath: {
           type: String,
@@ -36,7 +39,6 @@
           type: String,
           computed: '_computeCommentsGhPath(project, number)'
         },
-        project: String,
         number: String,
         fbComments: Object,
         generalComments: {
@@ -67,7 +69,7 @@
       _computeCommentsGhPath: function(project, number) {
         return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/issues/' + number + '/comments';
       },
-      _divideComments: function(e){
+      _divideComments: function(e) {
         if (e.detail.response) {
           this._flushComments();
           var comments = e.detail.response;
@@ -81,7 +83,7 @@
           }
         }
       },
-      _flushComments: function(){
+      _flushComments: function() {
         this.generalComments = [];
         this.groupComments = [];
       }
