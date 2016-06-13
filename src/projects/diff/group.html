@@ -74,6 +74,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-top: 1em;
         display: block;
         color: #ccc;
+        border: dashed 3px #ccc;
         padding: 3em 1em;
         text-align: center;
       }
@@ -233,7 +234,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           container.appendChild(dragHandle);
           hunkElem.setAttribute('class', 'edit-mode');
         } else {
-          hunkElem.set('approvable', true);
+          hunkElem.approvable = true;
         }
         container.appendChild(hunkElem);
         return container;
