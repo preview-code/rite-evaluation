@@ -171,6 +171,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pullRequest: {
           type: Object,
           notify: true
+        },
         project: Object,
         commentsPath: {
           type: String,
@@ -201,11 +202,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _prHasBeenMerged: function(e) {
         console.log(e);
-      }
+    },
       _computeCommentsPath: function(project, pullRequest) {
         return '/pulls/' + project.owner + '/' + project.name + '/branch/' + pullRequest.number + '/comments';
       },
-      _checkComments() {
+      _checkComments: function() {
         for(var i = 0; i < this.comments.length; i++ ){
           if(this.fbComments[this.comments[i].id] !== undefined){
             this.comments.splice(i,1);

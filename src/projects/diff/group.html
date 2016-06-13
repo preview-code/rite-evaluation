@@ -184,12 +184,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         url: String,
         groupComments: {
           type: Array,
-          notify: true,
+          notify: true
         },
         comments: {
           type: Array,
           notfiy: true,
-          value: function(){
+          value: function() {
             return [];
           }
         }
@@ -277,9 +277,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.collapseComments = true;
       },
       _updateComments: function(groupComments, group) {
-        if(group){
+        if (group) {
           var newComments = [];
-          for(var i = 0;i< groupComments.base.length; i++){
+          for (var i = 0;i< groupComments.base.length; i++) {
             // if(groupComments.base[i].groupID === group.id){
               newComments.push(groupComments.base[i].comment);
             // }

@@ -32,7 +32,7 @@
           type: String,
           computed: '_computeCommentsFbPath(project, number)'
         },
-        commentsGhPath : {
+        commentsGhPath: {
           type: String,
           computed: '_computeCommentsGhPath(project, number)'
         },
@@ -61,20 +61,19 @@
         this.$.githubComments.generateRequest();
       },
       _computeCommentsFbPath: function(project, number) {
-        // return '/'+ project.owner + '/' + project.name + '/pulls/' + number + '/groupcomments';
-        return '/pulls/'+ project.owner + '/' + project.name + '/branch/' + number + '/groupcomments';
+        return '/' + project.owner + '/' + project.name + '/pulls/' + number + '/groupcomments';
 
       },
       _computeCommentsGhPath: function(project, number) {
         return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/issues/' + number + '/comments';
       },
       _divideComments: function(e){
-        if (e.detail.response){
+        if (e.detail.response) {
           this._flushComments();
           var comments = e.detail.response;
-          for(var i = 0; i < comments.length; i++ ) {
+          for (var i = 0; i < comments.length; i++ ) {
             var groupID = this.fbComments[comments[i].id];
-            if (groupID){
+            if (groupID) {
               this.push('groupComments', {groupID: groupID, comment: comments[i]});
             } else {
               this.push('generalComments', comments[i]);
