@@ -2,13 +2,16 @@
 /*exported ProjectBehavior*/
 var ProjectBehavior = (function() {
   var instances = [];
-
+  var _project;
   return {
     properties: {
       project: Object
     },
     attached: function() {
       instances.push(this);
+      if (_project) {
+        this.project = _project;
+      }
     },
     detached: function() {
       var index = instances.indexOf(this);
@@ -18,6 +21,7 @@ var ProjectBehavior = (function() {
       instances.splice(index, 1);
     },
     setProject: function(project) {
+      _project = project;
       for (var i=0, l=instances.length;i<l;i++) {
         instances[i].project = project;
       }
