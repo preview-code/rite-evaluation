@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <!-- Import the element to test -->
   <link rel='import' href='../../../src/projects/pull-request/pull-request-add-comments.html'>
+  <link rel='import' href='../../../src/ajax/backend-ajax.html'>
 
 </head>
 <body>
@@ -56,7 +57,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       elem.newtext = 'New comment!';
       button = Polymer.dom(elem.root).querySelector('paper-button');
 
-      stub('iron-ajax', {
+      stub('backend-ajax', {
         generateRequest: function() {
 
         }

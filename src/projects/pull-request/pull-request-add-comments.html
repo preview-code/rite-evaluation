@@ -112,6 +112,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _setGroupComments: function(e) {
         this.push('comments', {groupID: this.group.id, comment: e.detail.response});
+        console.log(this.comments);
       }
 
     });
