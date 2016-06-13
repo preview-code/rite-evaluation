@@ -56,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       method="POST"
       url="[[backendPath]]/pr"
       headers='{"Content-Type": "application/json"}'
-      on-response="_setComments"
+      on-response="_setGeneralComments"
       ></iron-ajax>
 
     <iron-ajax
@@ -64,7 +64,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      method="POST"
      url="[[backendPath]]/group"
      headers='{"Content-Type": "application/json"}'
-     on-response="_setComments"
+     on-response="_setGroupComments"
      ></iron-ajax>
 
     <markdown-input markdown="{{newtext}}" label="Leave a comment."></markdown-input>
@@ -101,7 +101,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           else{
             this.$.postGroupComment.body = {
               body: this.newtext,
-              title: this.group.title
+              id: this.group.id
             },
             this.$.postGroupComment.generateRequest();
           }
@@ -111,9 +111,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _updateBackendPath: function(project, number) {
         return 'https://localhost:8443/' + project.owner + '/' + project.name + '/pulls/' + number + '/comments';
       },
-      _setComments: function(e) {
-        this.comments = [e.detail.response].concat(this.comments);
+      _setGeneralComments: function(e) {
+        this.push('comments', e.detail.response);
+      },
+      _setGroupComments: function(e) {
+        this.push('comments', {groupID: this.group.id, comment: e.detail.response});
       }
+
     });
   </script>
 </dom-module>

@@ -136,40 +136,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         opacity: 1;
       }
     </style>
-    <github-authenticated-ajax
-      id="githubComment"
-      refurl="[[commentsPath]]"
-      last-response="{{group.comments}}"
-      on-response="_checkComments"></github-authenticated-ajax>
-
-    <firebase-document
-      app-name="preview-code"
-      path="[[commentsFbPath]]"
-      data="{{fbComments}}"
-      ></firebase-document>
-
     <collapsible-content collapse="{{collapsed}}">
       <div class="header">
         <editable-title id="editTitleDialog" editable="[[editable]]" value="{{group.info.title}}"></editable-title>
       </div>
       <div class="content">
-
         <markdown-input
           hidden$="[[hideDescription]]"
           disabled="[[!editable]]"
           label="Enter a description for these changes. Markdown is supported."
           markdown="{{group.info.description}}"
         ></markdown-input>
-
         <dom-repeat-once id="hunks" items="[[group.diff]]" disabled="[[!editable]]"></dom-repeat-once>
         <collapsible-content class="toggle-comments" collapse="{{collapseComments}}" hidden$="[[editable]]">
           <span class="header">comments</span>
-          <template is="dom-repeat" items="[[group.comments]]" as="comment">
+          <template is="dom-repeat" items="[[comments]]" as="comment">
             <pull-request-comment
             text="[[comment.body]]" author="[[comment.user]]"
             date="[[comment.created_at]]"></pull-request-comment>
           </template>
-          <pull-request-add-comments comments="{{group.comments}}"
+          <pull-request-add-comments comments="{{comments}}"
           group="[[group]]" project="[[project]]" number="[[number]]"></pull-request-add-comments>
         </collapsible-content>
   </template>
@@ -196,19 +182,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         _isAlreadyInitialized: Boolean,
         number: Number,
         url: String,
-        commentsFbPath: {
-          type: String,
-          computed: '_computeCommentsFbPath(project, number)'
+        groupComments: {
+          type: Array,
+          notify: true,
         },
-        commentsPath: {
-          type: String,
-          computed: '_computeCommentsPath(project, number)'
-        },
+        comments: {
+          type: Array,
+          notfiy: true,
+          value: function(){
+            return [];
+          }
+        }
       },
       observers: [
         '_resetCollapsed(group)',
         '_groupChanged(group, editable)',
-        '_fireAjax(project, number)',
+        '_updateComments(groupComments.*, group)'
       ],
       attached: function() {
         if (!this.editable && (!this.group || !this.group.info.description)) {
@@ -287,21 +276,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.collapsed = false;
         this.collapseComments = true;
       },
-      _computeCommentsFbPath: function(project, number) {
-        return '/pulls/' + project.owner + '/' + project.name + '/branch/' + number + '/comments';
-      },
-      _computeCommentsPath: function(project, number) {
-        return 'https://api.github.com/repos/' + project.owner + '/' + project.name + '/issues/' + number + '/comments';
-      },
-      _checkComments() {
-        for(var i = 0; i < this.group.comments.length; i++ ) {
-          if(this.fbComments[this.group.comments[i].id] !== this.group.title) {
-            this.group.comments.splice(i,1);
+      _updateComments: function(groupComments, group) {
+        if(group){
+          var newComments = [];
+          for(var i = 0;i< groupComments.base.length; i++){
+            // if(groupComments.base[i].groupID === group.id){
+              newComments.push(groupComments.base[i].comment);
+            // }
           }
+          this.comments = newComments;
         }
-      },
-      _fireAjax: function() {
-        this.$.githubComment.generateRequest();
       }
     });
   </script>

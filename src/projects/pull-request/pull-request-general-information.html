@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="pull-request-comment.html">
 <link rel="import" href="pull-request-add-comments.html">
 <link rel="import" href="reviewers-list.html">
-<link rel="import" href="pull-request-comments.html">
 <link rel="import" href="pr-status.html">
 
 <dom-module id="pull-request-general-information">
@@ -110,11 +109,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         };
       }
     </style>
-    <github-authenticated-ajax
-      id="ajaxComments"
-      refurl="[[pullRequest._links.comments.href]]"
-      last-response="{{comments}}"
-      on-response="_checkComments"></github-authenticated-ajax>
 
     <github-authenticated-ajax
       id="ajaxIssue"
@@ -126,12 +120,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       refurl="[[pullRequest._links.self.href]]/merge"
       method="PUT"
       on-response="_prHasBeenMerged"></github-authenticated-ajax>
-
-      <firebase-document
-        app-name="preview-code"
-        path="[[commentsPath]]"
-        data="{{fbComments}}"
-        ></firebase-document>
 
     <div class="description primary-container">
       <header>
@@ -167,8 +155,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         [[_getMergeButtonText(pullRequest.mergeable)]]
       </paper-button>
     </div>
-
-    <pull-request-comments comments="{{comments}}"></pull-request-comments>
+    <template is="dom-repeat" items="[[comments]]">
+      <pull-request-comment text="[[item.body]]" author="[[item.user]]"
+        date="[[item.created_at]]" project="[[project]]"></pull-request-comment>
+    </template>
   </template>
   <script>
   /*global ToDateStringBehavior*/
@@ -194,12 +184,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // we need to manually trigger updating the styles.
         'updateStyles(pullRequest.state)'
       ],
-      // listeners: {
-      //   refresh_comments:
-      // }
       _fireAjax: function(pullRequest) {
         if (pullRequest) {
-          this.$.ajaxComments.generateRequest();
           this.$.ajaxIssue.generateRequest();
         }
       },

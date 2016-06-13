@@ -91,12 +91,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     </style>
     <diff-parser diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]" additions="{{additions}}" deletions="{{deletions}}" hunks="{{hunks}}"></diff-parser>
+<<<<<<< HEAD
     <hunk-sorter id="sorter" raw-hunks="[[hunks]]" groups="{{orderedGroups}}"></hunk-sorter>
+=======
+    <hunk-sorter id="sorter" raw-hunks="[[hunks]]" groups="{{orderedGroups}}" project="[[project]]"></hunk-sorter>
+    <add-comments groups="[[orderGroups]]"></add-comments>
+>>>>>>> refactor so we do not have to splice
 
     <div id="hunkGroups">
       <template is="dom-repeat" items="[[orderedGroups]]">
         <pull-request-group group="[[item]]" editable="[[editable]]" project="[[project]]"
-        number="[[number]]" project="[[project]]" url="[[baseUrl]]"></pull-request-group>
+        number="[[number]]" project="[[project]]" url="[[baseUrl]]" group-comments="{{groupComments}}" ></pull-request-group>
       </template>
     </div>
 
@@ -144,7 +149,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           notify: true
         },
         _groupTitles: Array,
-        _sortable: Object
+        _sortable: Object,
+        groupComments: {
+          type: Array,
+          notify: true
+        }
       },
       observers: [
         '_setGroupTitles(orderedGroups.*)'
