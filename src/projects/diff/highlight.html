@@ -123,27 +123,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       reviewers-list {
         margin-left: 0.5em;
-        margin-left: auto;
       }
       paper-icon-button {
-        margin-left: 0.5em;
+        margin-left: auto;
         -webkit-box-shadow: 0 0 4px 0 rgba(0,0,0,0.2);
         box-shadow: 0 0 4px 0 rgba(0,0,0,0.2);
         border-radius: 8px;
         width: 32px;
         height: 32px;
       }
-      paper-icon-button:hover,
-      paper-icon-button[active] {
+      paper-icon-button:hover {
         color: var(--primary-action-green);
+      }
+      paper-icon-button[active] {
+        color: var(--primary-background-color);
+        background-color: var(--primary-action-green);
       }
     </style>
 
     <collapsible-content collapse="{{collapsed}}">
       <div class="header">
         <span>[[hunk.file]] <a href$="[[hunk.fileUrl]]" target="_blank">Full file</a></span>
-        <paper-icon-button icon="icons:thumb-up" title="Approve this change"
-          hidden$="[[!approvable]]" toggles active="{{approved}}"></paper-icon-button>
+        <paper-icon-button noink icon="icons:thumb-up" title="Approve this change"
+          hidden$="[[!approvable]]" toggles active="{{_approved}}"></paper-icon-button>
         <reviewers-list small pullrequest="[[pullRequest]]"></reviewers-list>
       </div>
       <div class="content">

@@ -46,27 +46,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         margin: 2em 0;
         padding: 1em 2em;
-        /*background-color: var(--primary-background-color);*/
-        /*-webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);*/
-        /*box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);*/
-        border: dashed 3px var(--secondary-text-color);
+        border-radius: 2em;
+        border: dashed 5px #d6d6d6;
         -webkit-transition: all 0.3s ease;
         -moz-transition: all 0.3s ease;
         -ms-transition: all 0.3s ease;
         -o-transition: all 0.3s ease;
         transition: all 0.3s ease;
       }
-      :host([collapsed]) {
-        height: 3em !important;
-      }
       header {
         min-height: 2em;
       }
-      h2.title {
-        height: 25px;
-      }
       markdown-input {
-        margin-bottom: 1em;
+        margin: 1em 0;
       }
       markdown-input[disabled] {
         margin-bottom: 0;
@@ -80,7 +72,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         box-sizing: border-box;
         margin-top: 1em;
         display: block;
-        border: dashed 3px #ccc;
         color: #ccc;
         padding: 3em 1em;
         text-align: center;
