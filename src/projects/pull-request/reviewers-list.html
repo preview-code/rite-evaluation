@@ -154,9 +154,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
       },
-      observers: [
-        // '_sortReviewers(pullRequest, approvals)'
-      ],
       listeners: {
         'resort': '_resort'
       },
@@ -178,7 +175,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
 
       _resort: function() {
-        this._sortReviewers(this.pullRequest, this.approvals);
+        var a = this.approvals;
+        this.set('approvals', []);
+        this.set('approvals', a);
       },
       _removeAssignee: function(e) {
         this.$.removeAssignees.body = {

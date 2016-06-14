@@ -271,7 +271,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return isAssignee && isApprovable;
       },
       _onApproveChange: function(isApproved) {
-        if (this.hunk) {
+        if (this.hunk && (!this._approvals || isApproved !== this._approvals[this.githubUser.id])) {
           this.$.approveAjax.body = {
             hunkId: this.hunk.id,
             isApproved: isApproved,
