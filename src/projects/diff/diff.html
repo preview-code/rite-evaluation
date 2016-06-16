@@ -35,7 +35,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="hunk-sorter.html">
 <link rel="import" href="../../util/input-dialog.html">
 <link rel="import" href="order-dialog.html">
-<link rel="import" href="../pull-request/pull-request-add-comments.html">
 
 <dom-module id="pull-request-diff">
   <template>
@@ -93,7 +92,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </style>
     <diff-parser diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]" additions="{{additions}}" deletions="{{deletions}}" hunks="{{hunks}}"></diff-parser>
     <hunk-sorter id="sorter" raw-hunks="[[hunks]]" groups="{{orderedGroups}}" pull-request="[[pullRequest]]"></hunk-sorter>
-    <pull-request-add-comments groups="[[orderedGroups]]"></pull-request-add-comments>
 
     <div id="hunkGroups">
       <template is="dom-repeat" items="[[orderedGroups]]">
