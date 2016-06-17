@@ -59,18 +59,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     test('shows reviewers, when reviewers are set', function(){
-      elem.pullRequest = {assignees: [{login: 'tnsmith',id: 2, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'},
-      {login: 'eanker', id: 3, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
-      assert.deepEqual(elem.sortedReviewers, [{approved: undefined, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3', login:'tnsmith' },
-      {approved: undefined, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3', login:'eanker'}]);
+      elem.pullRequest = {
+        assignees: [{
+          login: 'tnsmith',
+          id: 2,
+          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'},{
+          login: 'eanker',
+          id: 3,
+          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
+      var result = [{
+          approved: undefined,
+          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3',
+          login:'tnsmith' },{
+          approved: undefined,
+          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3',
+          login:'eanker'}]
+      assert.deepEqual(elem.sortedReviewers, result);
     });
 
     test('shows reviewers, when a lgtm is set', function(){
       elem.approvals = {3: true};
-      elem.pullRequest = {assignees: [{login: 'eanker', id: 3, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'},
-      {login: 'tnsmith',id: 2, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
-      assert.deepEqual(elem.sortedReviewers, [{approved: true, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3', login:'eanker'},
-      {approved: undefined, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3', login:'tnsmith' }]);
+      elem.pullRequest = {assignees:[{
+                          login: 'eanker',
+                          id: 3,
+                          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}, {
+                          login: 'tnsmith',
+                          id: 2,
+                          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
+      var result = [{
+        approved: true,
+        avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3',
+        login:'eanker'},{
+        approved: undefined,
+        avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3',
+        login:'tnsmith' }]
+      assert.deepEqual(elem.sortedReviewers, result);
     });
 
     test('correct github path is set, when project and pull request are set', function(){
@@ -87,8 +110,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
       });
-      elem.pullRequest = {assignees: [{login: 'eanker', id: 3, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'},
-      {login: 'tnsmith',id: 2, avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
+      elem.pullRequest = {
+                          assignees: [{
+                          login: 'eanker',
+                          id: 3,
+                          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'},{
+                          login: 'tnsmith',
+                          id: 2,
+                          avatar_url: 'https://avatars.githubusercontent.com/u/5946422?v=3'}]};
       flush(function() {
       var button = Polymer.dom(elem.root).querySelector('paper-icon-button');
       MockInteractions.tap(button);
