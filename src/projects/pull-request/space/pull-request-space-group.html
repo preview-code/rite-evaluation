@@ -48,7 +48,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         user-select: none;
         padding: 16px;
         min-width: 300px;
+<<<<<<< HEAD
         max-width: 500px;
+=======
+>>>>>>> Improve space view. Fixed:
       }
 
       :host([linking-candidate]) collapsible-content {
@@ -175,10 +178,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       attached: function() {
         this.$.anchors.addEventListener('mouseenter', function() {
+<<<<<<< HEAD
           this.$.anchors.addEventListener('mousemove', this._updateAnchorGhostPos.bind(this));
         }.bind(this));
         this.$.anchors.addEventListener('mouseleave', function() {
           this.$.anchors.removeEventListener('mousemove', this._updateAnchorGhostPos.bind(this));
+=======
+          this.$.anchors.addEventListener('mousemove', this._updateAnchorGhostPost.bind(this));
+        }.bind(this));
+        this.$.anchors.addEventListener('mouseleave', function() {
+          this.$.anchors.removeEventListener('mousemove', this._updateAnchorGhostPost.bind(this));
+>>>>>>> Improve space view. Fixed:
         }.bind(this));
       },
 
@@ -198,7 +208,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       },
 
+<<<<<<< HEAD
       _updateAnchorGhostPos: function(e) {
+=======
+      _updateAnchorGhostPost: function(e) {
+>>>>>>> Improve space view. Fixed:
         var mouseVect = this.toVector(e);
         var groupContentVect = this.toVector(this.$.groupContent.getBoundingClientRect());
         var groupContentSize = this.toVector(this.$.groupContent.getBoundingClientRect(), 'width', 'height');

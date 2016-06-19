@@ -80,6 +80,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       test('drags group around', function(done) {
         var oldRect;
         elem.addEventListener('track', function(e) {
+          console.log('hu');
           if (e.detail.state === 'end') {
             var rect = groups[0].getBoundingClientRect();
             assert.equal(rect.top - oldRect.top, 0);

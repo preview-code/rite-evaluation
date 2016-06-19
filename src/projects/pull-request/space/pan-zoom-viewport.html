@@ -62,7 +62,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         transform-origin: top left;
         transform: scale(var(--zoom, 1));
       }
+<<<<<<< HEAD
       #grid, #grid ::content > * {
+=======
+      #grid, ::content > * {
+>>>>>>> Improve space view. Fixed:
         position: absolute;
         width: 1500px;
         height: 1500px;
@@ -139,7 +143,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }.bind(this));
         }
         else {
+<<<<<<< HEAD
           // console.log('click: ', this.clientToCanvasVector(this.toVector(e)));
+=======
+          console.log('click: ', this.clientToCanvasVector(this.toVector(e)));
+>>>>>>> Improve space view. Fixed:
         }
       },
       _pan: function(startPos, currentPan) {
