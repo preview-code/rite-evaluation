@@ -25,7 +25,8 @@
     "marked-element": "TimvdLippe/marked-element#expose-callback",
     "prism-element": "polymerelements/prism-element#^1.1.0",
     "polymerfire": "firebase/polymerfire#^0.9.2",
-    "prism": "1.5.1"
+    "prism": "1.5.1",
+    "Snap.svg": "snap.svg#^0.4.1"
   },
   "resolutions": {
     "carbon-route": "reset-tail",
