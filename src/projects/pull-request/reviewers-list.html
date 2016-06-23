@@ -143,6 +143,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Object,
           notify: true
         },
+        approvals: Object,
         githubPathPost: {
           type: String,
           computed: '_githubPathPost(project, pullRequest)'
@@ -151,10 +152,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       observers: [
         '_updateReviewers(pullRequest)',
         '_updateReviewers(pullRequest.assignees)',
-        '_updateReviewers(pullRequest.approvals)'
+        '_updateReviewers(pullRequest.approvals)',
+        '_updateReviewers(approvals)'
       ],
       _updateReviewers: function() {
-        var approvals = this.pullRequest.approvals || {};
+        var approvals = this.approvals || this.pullRequest.approvals || {};
         this.sortedReviewers = this.pullRequest.assignees.map(function(assignee) {
           return {
             login: assignee.login,
