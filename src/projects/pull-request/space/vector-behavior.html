@@ -50,11 +50,7 @@ var VectorBehavior = (function() {
       var args = Array.prototype.slice.call(arguments);
       return args.reduce(function(a, b) {
         return joinAll(a, b, f);
-<<<<<<< HEAD
       });
-=======
-      }.bind(this));
->>>>>>> Improve space view. Fixed:
     };
   };
 
@@ -100,14 +96,9 @@ var VectorBehavior = (function() {
       return this.subtract(clippedBottomRight, size);
     },
 
-<<<<<<< HEAD
     average: function(v1, v2) {
-=======
-    between: function(v1, v2) {
->>>>>>> Improve space view. Fixed:
       return this.scale(0.5, this.add(v1,v2));
     }
-
   };
 })();
 </script>
