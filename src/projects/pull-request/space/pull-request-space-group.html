@@ -48,6 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         user-select: none;
         padding: 16px;
         min-width: 300px;
+        max-width: 500px;
       }
 
       :host([linking-candidate]) collapsible-content {
@@ -174,10 +175,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       attached: function() {
         this.$.anchors.addEventListener('mouseenter', function() {
-          this.$.anchors.addEventListener('mousemove', this._updateAnchorGhostPost.bind(this));
+          this.$.anchors.addEventListener('mousemove', this._updateAnchorGhostPos.bind(this));
         }.bind(this));
         this.$.anchors.addEventListener('mouseleave', function() {
-          this.$.anchors.removeEventListener('mousemove', this._updateAnchorGhostPost.bind(this));
+          this.$.anchors.removeEventListener('mousemove', this._updateAnchorGhostPos.bind(this));
         }.bind(this));
       },
 
@@ -197,7 +198,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       },
 
-      _updateAnchorGhostPost: function(e) {
+      _updateAnchorGhostPos: function(e) {
         var mouseVect = this.toVector(e);
         var groupContentVect = this.toVector(this.$.groupContent.getBoundingClientRect());
         var groupContentSize = this.toVector(this.$.groupContent.getBoundingClientRect(), 'width', 'height');

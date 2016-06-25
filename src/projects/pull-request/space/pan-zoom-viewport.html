@@ -62,7 +62,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         transform-origin: top left;
         transform: scale(var(--zoom, 1));
       }
-      #grid, ::content > * {
+      #grid, #grid ::content > * {
         position: absolute;
         width: 1500px;
         height: 1500px;
@@ -139,7 +139,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }.bind(this));
         }
         else {
-          console.log('click: ', this.clientToCanvasVector(this.toVector(e)));
+          // console.log('click: ', this.clientToCanvasVector(this.toVector(e)));
         }
       },
       _pan: function(startPos, currentPan) {

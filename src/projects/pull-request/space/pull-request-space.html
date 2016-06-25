@@ -92,7 +92,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         'unselect': '_unselectGroup'
       },
       attached: function() {
-        this._updateElemTrackingPosition = this._throttle(60, this._updateElemTrackingPosition.bind(this));
+        this._updateElemTrackingPosition = this._updateElemTrackingPosition.bind(this);
         this._snap = Snap(this.$.svg);
       },
 
@@ -137,14 +137,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           var currentMousePos = vp.clientToCanvasVector(event);
           if (event.state === 'start') {
             lastElem = e.detail.elem;
-            startMousePos = currentMousePos;
+            var delta = vp.unzoom(this.toVector(event, 'dx', 'dy'));
+            startMousePos = this.subtract(currentMousePos, delta);
             originalPosition = vp.clientToCanvasVector(this.toVector(lastElem.getBoundingClientRect()));
             lastElem.style.zIndex = 5;
             lastElem.saveArrowPositions();
+            this._updateElemTrackingPosition(lastElem, originalPosition, delta);
           } else if (event.state === 'track') {
             var delta = this.subtract(currentMousePos, startMousePos);
             this._updateElemTrackingPosition(lastElem, originalPosition, delta);
           } else if (event.state === 'end') {
+            var delta = this.subtract(currentMousePos, startMousePos);
+            this._updateElemTrackingPosition(lastElem, originalPosition, delta);
             lastElem.style.zIndex = 0;
             lastElem = undefined;
             originalPosition = undefined;
