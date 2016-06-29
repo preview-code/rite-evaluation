@@ -44,6 +44,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       :host {
         display: block;
       }
+      :host([show-space]) {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        overflow-y: hidden;
+      }
+      :host([show-space]) .defaultContent {
+        flex: 1;
+        max-width: 35%;
+        overflow-y: auto;
+        top: calc(2 * var(--header-height));
+        height: calc(100vh - 2*var(--header-height));
+      }
+      :host([show-space]) pull-request-space {
+        flex: 1;
+        height: calc(100vh - 2*var(--header-height));
+        z-index: 0;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
       .selectBranches {
         background-color: var(--primary-background-color);
         padding: 2em 2em;
@@ -99,41 +121,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       loading="{{loadingPR}}"
       ></backend-ajax>
 
-    <div class="inputs">
-      <div class="selectBranches">
-        <h2>Choose branches to create a pull request on</h2>
-        Merge into
-        <branch-selector branches="[[branchNames]]"
-          selected="{{baseBranch}}" on-selected="_focusHeadBranch"
-          ></branch-selector>
-        from <branch-selector
-          id="headBranchSelector" branches="[[branchNames]]"
-          selected="{{headBranch}}"
-          ></branch-selector>
+    <pull-request-space hidden$="[[!showSpace]]" id="space" data-route="space" groups="[[_spaceGroups]]"></pull-request-space>
+    <div class="defaultContent">
+      <div class="inputs">
+        <div class="selectBranches">
+          <h2>Choose branches to create a pull request on</h2>
+          Merge into
+          <branch-selector branches="[[branchNames]]"
+            selected="{{baseBranch}}" on-selected="_focusHeadBranch"
+            ></branch-selector>
+          from <branch-selector
+            id="headBranchSelector" branches="[[branchNames]]"
+            selected="{{headBranch}}"
+            ></branch-selector>
+        </div>
+
+        <project-create-pull-request-description
+          id="description"
+          project="[[project]]"
+          title="{{title}}"
+          description="{{description}}"
+          metadata="{{metadata}}"
+          ></project-create-pull-request-description>
       </div>
 
-      <project-create-pull-request-description
-        id="description"
+      <paper-spinner active="[[loadingDiff]]"></paper-spinner>
+
+      <project-create-pull-diff
+        id="diffView"
+        diff="[[diff]]"
+        base-url="https://github.com/[[project.owner]]/[[project.name]]"
+        sha="[[headBranch]]"
         project="[[project]]"
-        title="{{title}}"
-        description="{{description}}"
-        metadata="{{metadata}}"
-        ></project-create-pull-request-description>
+        title="[[title]]"
+        description="[[description]]"
+        github-user="[[githubUser]]"
+        show-space="{{showSpace}}"
+        space-groups="{{_spaceGroups}}"
+        loading="[[loadingPR]]"
+        ></project-create-pull-diff>
     </div>
-
-    <paper-spinner active="[[loadingDiff]]"></paper-spinner>
-
-    <project-create-pull-diff
-      id="diffView"
-      diff="[[diff]]"
-      base-url="https://github.com/[[project.owner]]/[[project.name]]"
-      sha="[[headBranch]]"
-      project="[[project]]"
-      title="[[title]]"
-      description="[[description]]"
-      github-user="[[githubUser]]"
-      loading="[[loadingPR]]"
-      ></project-create-pull-diff>
 
     <paper-toast id="errorToast" horizontal-align="right" horizontal-offset="20"></paper-toast>
   </template>
@@ -159,6 +186,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         backendPath: {
           type: String,
           computed: '_updateBackendPath(title, project)'
+        },
+        showSpace: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true
         }
       },
       observers: [

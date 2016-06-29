@@ -115,19 +115,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
 
       _createBlocks: function(groups) {
-        var container = this.$.container;
         this._blocks = [];
-        while (container.firstChild) {
-          container.removeChild(container.firstChild);
-        }
         while (this._arrows.length) {
           this._arrows.pop().remove();
         }
+      },
+      _updateBlocks: function() {
+        var groups = this.$.container.querySelectorAll('pull-request-space-group');
         for (var i=0, l=groups.length; i<l; i++) {
-          var elem = document.createElement('pull-request-space-group');
-          elem.group = groups[i];
-          Polymer.dom(container).appendChild(elem);
-          this._blocks.push(elem);
+          this._blocks.push(groups[i]);
         }
       },
 
@@ -138,7 +134,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           newPos,
           elemSize,
           this.nullVector,
-          this.constVector(1500));
+          this.constVector(2500));
 
         elem.moveArrows(delta);
 

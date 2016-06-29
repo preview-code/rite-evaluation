@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         height: 100%;
         width: 100%;
+        position: relative;
       }
       .actions {
         position: relative;
@@ -73,8 +74,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 100%;
         overflow: scroll;
       }
+      .shadow {
+        box-shadow:inset 0 0 10px rgba(0,0,0,0.35);
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width:100%;
+        height:100%;
+        z-index: 1;
+      }
     </style>
 
+    <div class="shadow"></div>
     <div id="viewport">
       <div id="grid">
         <content></content>
