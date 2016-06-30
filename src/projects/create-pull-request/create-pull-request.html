@@ -199,7 +199,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         '_reset(project)'
       ],
       listeners: {
-        'create-pr': '_createPullRequest'
+        'create-pr': '_createPullRequest',
+        // 'jump-to-hunk': 'jumpToHunk'
+      },
+      jumpToHunk: function(e) {
+        this.$.diffView.jumpToHunk(e.detail.groupId, e.detail.hunkId);
       },
       _reset: function() {
         this.baseBranch = 'master';
