@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="create-pull-request/create-pull-request.html">
 <link rel="import" href="project-behavior.html">
 <link rel="import" href="project-activity.html">
-<link rel="import" href="info-header.html">
+
 
 <dom-module id="project-overview-page">
   <template>
@@ -75,10 +75,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         margin-bottom: 5px;
       }
-      iron-pages > project-create-pull-request[show-space] {
-        @apply(--full-width);
-      }
-      iron-pages > * {
+      project-activity {
         -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
         -ms-transition: all 0.5s ease;
@@ -90,7 +87,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <app-route route="{{route}}" pattern="/:page" data="{{page}}"></app-route>
 
-    <info-header collapsed="[[showSpace]]" title="[[project.owner]] / [[project.name]]">
+    <info-header title="[[project.owner]] / [[project.name]]">
       <span class="subtitle">
         <span>[[project._actual.description]]</span>
 
@@ -106,19 +103,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </paper-tab>
       </paper-tabs>
     </info-header>
-
-    <iron-pages selected="[[page.page]]"
-                attr-for-selected="data-route"
-                fallback-selection="404">
-      <project-activity data-route="activity"></project-activity>
-      <project-create-pull-request data-route="createpull" github-user="[[githubUser]]" show-space="{{showSpace}}"></project-create-pull-request>
-      <span data-route="404">
-        Oops you hit a 404!
-        <a href="/">Head back home</a>
-      </span>
-    </iron-pages>
-
-
+    <project-activity></project-activity>
   </template>
   <script>
   /*global ProjectBehavior*/
@@ -129,9 +114,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         githubUser: Object,
         route: Object,
         page: Object
-      },
-      listeners: {
-
       }
     });
   </script>

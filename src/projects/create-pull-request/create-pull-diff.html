@@ -35,7 +35,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <template>
     <style>
       :host {
-        display: none;
         padding: 2em 0;
       }
       paper-button {
@@ -53,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </style>
     <info-header title="Describe your changes">
       <span class="subtitle">You can drag the diff sections to re-order them for reviewers.</span>
-      <paper-button toggles active="{{showSpace}}">Space view</paper-button>
     </info-header>
     <pull-request-diff data-route="diff" id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]" github-user="[[githubUser]]"
       ordered-groups="{{groups}}"
@@ -63,10 +61,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <paper-button on-tap="_createPR" raised disabled="[[loading]]">Create pull request</paper-button>
   </template>
   <script>
-  /*global FadeInBehavior*/
     Polymer({
       is: 'project-create-pull-diff',
-      behaviors: [FadeInBehavior],
       properties: {
         diff: String,
         baseUrl: String,
