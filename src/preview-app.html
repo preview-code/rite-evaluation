@@ -201,7 +201,9 @@ Prism.languages.diff.other = /.+/m;
     },
     attached: function() {
       // On page-load, we may or may not be signed in.
-      this.$.firebase.checkSignedIn();
+      if (this.page.page !== '' || document.referrer.indexOf('preview-code.firebaseapp.com') > -1) {
+        this.$.firebase.checkSignedIn();
+      }
     },
     _equals: function(one, other) {
       return one === other;

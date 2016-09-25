@@ -107,7 +107,7 @@ of the GitHub oAuth token.
       checkSignedIn: function() {
         this.loading = true;
         this.$.auth.auth.getRedirectResult().then(function(result) {
-          redirectDone = !!result.credential
+          var redirectDone = !!result.credential;
           if (redirectDone) {
             this._parseSuccesfulResult(result);
           } else {
@@ -127,14 +127,6 @@ of the GitHub oAuth token.
         this._setEmptyTokens();
         return this.$.auth.auth.signOut();
       },
-
-      _redirectToGitHub: function(privateRepos) {
-        var provider = new firebase.auth.GithubAuthProvider();
-        provider.addScope('user');
-        if (privateRepos) {
-          provider.addScope('repo');
-        } else {
-          provider.addScope('public_repo');
 
       /**
        * When Firebase confirms the user is signed in (via the signedIn property)
