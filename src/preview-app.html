@@ -126,6 +126,9 @@ Prism.languages.diff.other = /.+/m;
         margin:4px;
         text-transform: none;
       }
+      paper-button:hover {
+        background: var(--anchor-hover-color);
+      }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{page}}" tail="{{tail}}"></app-route>
@@ -152,8 +155,8 @@ Prism.languages.diff.other = /.+/m;
               <a href$="[[route.prefix]]/projects">My projects</a>
             </paper-tab>
           </paper-tabs>
+          <paper-button on-tap="_signout">Sign out</paper-button>
         </template>
-        <paper-button raised on-tap="_signout" hidden$="[[_showSignOut(page.page)]]">Sign out</paper-button>
       </div>
 
       <div class="loading" hidden$="[[!firebaseLoading]]">
@@ -217,9 +220,6 @@ Prism.languages.diff.other = /.+/m;
       this.$.authenticatedAjax.storeToken(e.detail);
       this.set('page.page', 'projects');
       this.$.ajaxGithubUser.generateRequest();
-    },
-    _showSignOut: function(page) {
-      return page === '';
     }
   });
   </script>
