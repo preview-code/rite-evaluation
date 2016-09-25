@@ -117,7 +117,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <div class="filler"></div>
     <iron-pages
         class="project"
-        selected="[[_getCurrentView(projectSelected, pullRequestSelected, subPage)]]"
+        selected="[[_getCurrentView(projectSelected, subPage)]]"
         attr-for-selected="data-route"
         on-tap="_tapHideProjectList"
         fallback-selection="overview">
@@ -125,7 +125,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <project-overview-page data-route="overview" tabindex="0"
           route="{{nameTail}}" pullrequests="[[pullrequests]]" github-user="[[githubUser]]"></project-overview-page>
       <project-create-pull-request data-route="createpull" github-user="[[githubUser]]"></project-create-pull-request>
-      <pull-request-page data-route="pr" selected-pull="[[selectedPull]]" route="{{prTail}}" github-user="[[githubUser]]"></pull-request-page>
+      <pull-request-page data-route="pulls" selected-pull="[[selectedPull]]" route="{{prTail}}" github-user="[[githubUser]]"></pull-request-page>
     </iron-pages>
   </template>
   <script>
@@ -229,7 +229,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _focusProject: function() {
         this.$$('project-overview-page').focus();
       },
-      _getCurrentView: function(projectSelected, pullRequestSelected, subPage) {
+      _getCurrentView: function(projectSelected, subPage) {
         if (!projectSelected) {
           return 'no-selected';
         }
