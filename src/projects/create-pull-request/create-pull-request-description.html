@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
@@ -39,7 +40,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <style>
       :host {
         display: none;
-        padding: 2em;
+        padding: 2em 2em 1em 2em;
         border-bottom: solid 1px var(--secondary-background-color);
         background-color: var(--primary-background-color);
       }
@@ -60,8 +61,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         --paper-input-container-color: var(--secondary-background-color);
         --paper-input-container-focus-color: var(--anchor-color);
       }
-      #metadata {
-        margin-top: 10px;
+      .bottom {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        margin-top: 1em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      paper-button.next {
+        background-color: var(--primary-action-green);
+        color: white;
+        text-align: center;
       }
     </style>
 
@@ -69,8 +83,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <markdown-input
       label="Enter a description for your pull request. Markdown is supported."
       markdown="{{description}}"></markdown-input>
-    <paper-checkbox id="metadata" checked="{{metadata}}">Add direct link on GitHub</paper-checkbox>
-    <paper-tooltip for="metadata" offset="5">Include a link back to the pull request on preview-code.com inside the pull description on GitHub</paper-tooltip>
+    <div class="bottom">
+      <paper-checkbox id="backlink-toggle" checked="{{metadata}}">Add direct link on GitHub</paper-checkbox>
+      <paper-tooltip for="backlink-toggle" offset="5">Include a link back to the pull request on preview-code.com inside the pull description on GitHub</paper-tooltip>
+      <paper-button on-tap="_next" class="next">Next →</paper-button>
+    </div>
   </template>
   <script>
   /*global FadeInBehavior*/
@@ -90,6 +107,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           value: true,
           notify: true
         }
+      },
+      _next: function() {
+        this.fire('next');
       },
       behaviors: [FadeInBehavior]
     });

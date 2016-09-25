@@ -58,7 +58,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: var(--anchor-color);
       }
     </style>
-    <paper-dialog id="addGroupDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+    <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <paper-input id="input" label="[[label]]"></paper-input>
       <div class="buttons">
         <paper-button id="ok" dialog-confirm>OK</paper-button>
@@ -80,7 +80,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       open: function() {
         this.$.input.value = '';
-        this.$.addGroupDialog.open();
+        this.$.dialog.open();
       },
       _focusNewGroupInput: function() {
         this.$.input.focus();

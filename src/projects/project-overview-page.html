@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="create-pull-request/create-pull-request.html">
 <link rel="import" href="project-behavior.html">
 <link rel="import" href="project-activity.html">
-<link rel="import" href="info-header.html">
+
 
 <dom-module id="project-overview-page">
   <template>
@@ -71,12 +71,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding: 0 20px;
         height: 100%;
       }
-      iron-pages {
-        @apply(--constraint-width);
-      }
       .subtitle span {
         display: block;
         margin-bottom: 5px;
+      }
+      project-activity {
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -ms-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        @apply(--constraint-width);
       }
     </style>
 
@@ -98,19 +103,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </paper-tab>
       </paper-tabs>
     </info-header>
-
-    <iron-pages selected="[[page.page]]"
-                attr-for-selected="data-route"
-                fallback-selection="404">
-      <project-activity data-route="activity"></project-activity>
-      <project-create-pull-request data-route="createpull" github-user="[[githubUser]]"></project-create-pull-request>
-      <span data-route="404">
-        Oops you hit a 404!
-        <a href="/">Head back home</a>
-      </span>
-    </iron-pages>
-
-
+    <project-activity></project-activity>
   </template>
   <script>
   /*global ProjectBehavior*/

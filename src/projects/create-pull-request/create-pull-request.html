@@ -28,6 +28,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../util/marked-github-element.html">
 <link rel="import" href="../../util/branch-selector.html">
 <link rel="import" href="../../util/markdown-input.html">
@@ -35,23 +37,46 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../ajax/backend-ajax.html">
 <link rel="import" href="../diff/diff.html">
 <link rel="import" href="../project-behavior.html">
+<link rel="import" href="../info-header.html">
 <link rel="import" href="create-pull-request-description.html">
 <link rel="import" href="create-pull-diff.html">
-
 <dom-module id="project-create-pull-request">
   <template>
     <style>
       :host {
         display: block;
       }
+      :host([show-space]) {
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        overflow-y: hidden;
+      }
+      :host([show-space]) .stepContent {
+        flex: 1;
+        max-width: 35%;
+        overflow-y: auto;
+        top: calc(2 * var(--header-height));
+        height: calc(100vh - 2*var(--header-height));
+      }
+      :host([show-space]) pull-request-space {
+        flex: 1;
+        height: calc(100vh - 2*var(--header-height));
+        z-index: 0;
+      }
+      .stepContent.one {
+        @apply(--constraint-width);
+        -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
+        box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
+      }
+
+      [hidden] {
+        display: none !important;
+      }
       .selectBranches {
         background-color: var(--primary-background-color);
         padding: 2em 2em;
         border-bottom: solid 1px var(--secondary-background-color);
-      }
-      .inputs {
-        -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-        box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
       }
       h2 {
         font-size: 1.2em;
@@ -64,6 +89,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       paper-spinner:not([active]) {
         display: none;
+      }
+      paper-tabs {
+        display: block;
+        justify-content: center;
+        @apply(--layout-self-end);
+        --paper-tabs-selection-bar-color: var(--anchor-color);
+        color: var(--secondary-action-red);
+        font-size: 1em;
+        width: 300px;
+        margin: 0 auto;
+      }
+      paper-tab {
+        padding: 0;
+        --paper-tab-ink: var(--anchor-color);
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      paper-tab {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        text-decoration: none;
+        color: var(--primary-text-color);
+        padding: 0 20px;
+        height: 100%;
+      }
+      project-create-pull-request-description {
+        margin-bottom: 2em;
       }
     </style>
     <github-authenticated-ajax
@@ -99,42 +151,60 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       loading="{{loadingPR}}"
       ></backend-ajax>
 
-    <div class="inputs">
-      <div class="selectBranches">
-        <h2>Choose branches to create a pull request on</h2>
-        Merge into
-        <branch-selector branches="[[branchNames]]"
+
+    <info-header title="[[project.owner]] / [[project.name]]">
+      <span class="subtitle">
+        <span>Create a pull request</span>
+      </span>
+      <paper-tabs selected="{{creationStep}}" class="bottom self-end" attr-for-selected="data-route">
+        <paper-tab data-route="1">Description</paper-tab>
+        <paper-tab data-route="2">Organize Changes</paper-tab>
+      </paper-tabs>
+    </info-header>
+
+    <iron-pages
+        class="project"
+        selected="[[creationStep]]"
+        attr-for-selected="data-route"
+        fallback-selection="1">
+      <div data-route="1" class="stepContent one">
+        <div class="selectBranches">
+          <h2>Choose branches to create a pull request on</h2>
+          Merge into
+          <branch-selector branches="[[branchNames]]"
           selected="{{baseBranch}}" on-selected="_focusHeadBranch"
           ></branch-selector>
-        from <branch-selector
+          from <branch-selector
           id="headBranchSelector" branches="[[branchNames]]"
           selected="{{headBranch}}"
           ></branch-selector>
+        </div>
+
+        <project-create-pull-request-description
+          id="description"
+          project="[[project]]"
+          title="{{title}}"
+          description="{{description}}"
+          metadata="{{metadata}}"></project-create-pull-request-description>
       </div>
-
-      <project-create-pull-request-description
-        id="description"
-        project="[[project]]"
-        title="{{title}}"
-        description="{{description}}"
-        metadata="{{metadata}}"
-        ></project-create-pull-request-description>
-    </div>
-
+      <div data-route="2" class="stepContent two">
+        <!-- <pull-request-space hidden$="[[!showSpace]]" id="space" data-route="space" groups="[[_spaceGroups]]"></pull-request-space> -->
+        <project-create-pull-diff
+          id="diffView"
+          diff="[[diff]]"
+          base-url="https://github.com/[[project.owner]]/[[project.name]]"
+          sha="[[headBranch]]"
+          project="[[project]]"
+          title="[[title]]"
+          description="[[description]]"
+          github-user="[[githubUser]]"
+          show-space="{{showSpace}}"
+          space-groups="{{_spaceGroups}}"
+          loading="[[loadingPR]]"
+          ></project-create-pull-diff>
+      </div>
+    </iron-pages>
     <paper-spinner active="[[loadingDiff]]"></paper-spinner>
-
-    <project-create-pull-diff
-      id="diffView"
-      diff="[[diff]]"
-      base-url="https://github.com/[[project.owner]]/[[project.name]]"
-      sha="[[headBranch]]"
-      project="[[project]]"
-      title="[[title]]"
-      description="[[description]]"
-      github-user="[[githubUser]]"
-      loading="[[loadingPR]]"
-      ></project-create-pull-diff>
-
     <paper-toast id="errorToast" horizontal-align="right" horizontal-offset="20"></paper-toast>
   </template>
   <script>
@@ -144,6 +214,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       behaviors: [ProjectBehavior],
       properties: {
         githubUser: Object,
+        creationStep: {
+          type: Number,
+          value: 1
+        },
         title: String,
         description: String,
         contributors: Array,
@@ -159,6 +233,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         backendPath: {
           type: String,
           computed: '_updateBackendPath(title, project)'
+        },
+        showSpace: {
+          type: Boolean,
+          notify: true,
+          reflectToAttribute: true
         }
       },
       observers: [
@@ -167,12 +246,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         '_reset(project)'
       ],
       listeners: {
-        'create-pr': '_createPullRequest'
+        'create-pr': '_createPullRequest',
+        'next': '_toNextCreationStep'
+      },
+      jumpToHunk: function(e) {
+        this.$.diffView.jumpToHunk(e.detail.groupId, e.detail.hunkId);
+      },
+      _toNextCreationStep: function() {
+        this.set('creationStep', Number(this.creationStep) + 1);
       },
       _reset: function() {
         this.baseBranch = 'master';
         this.headBranch = '<select branch>';
-        this.$.diffView.hide();
         this.$.description.hide();
       },
       _fetchBranchesAndCollaborators: function() {
@@ -193,7 +278,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.$.headBranchSelector.focus();
       },
       _showPullRequestInformation: function() {
-        this.$.diffView.show();
         this.$.description.show();
       },
       _createPullRequest: function() {

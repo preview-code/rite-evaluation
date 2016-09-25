@@ -37,6 +37,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         height: 100%;
         width: 100%;
+        position: relative;
       }
       .actions {
         position: relative;
@@ -58,14 +59,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         -ms-transition: all 0.3s ease;
         -o-transition: all 0.3s ease;
         transition: all 0.3s ease;
-        padding: 250px;
+        padding: 50px;
         transform-origin: top left;
         transform: scale(var(--zoom, 1));
       }
       #grid, #grid ::content > * {
         position: absolute;
-        width: 1500px;
-        height: 1500px;
+        width: 2500px;
+        height: 2500px;
       }
       #viewport {
         position: relative;
@@ -73,8 +74,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 100%;
         overflow: scroll;
       }
+      .shadow {
+        box-shadow:inset 0 0 10px rgba(0,0,0,0.35);
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width:100%;
+        height:100%;
+        z-index: 1;
+      }
     </style>
 
+    <div class="shadow"></div>
     <div id="viewport">
       <div id="grid">
         <content></content>
@@ -111,7 +123,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       clientToCanvasVector: function(positionVect) {
         var gridPos = this.toVector(this.$.grid.getBoundingClientRect());
         var viewportPos = this.scale(1/this.zoom, this.subtract(positionVect, gridPos));
-        return this.subtract(viewportPos, this.constVector(250));
+        return this.subtract(viewportPos, this.constVector(50));
       },
 
       unzoom: function(vector) {
@@ -121,10 +133,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       scrollViewportTo: function(viewportPosition) {
         this.$.viewport.scrollLeft = Math.max(0, viewportPosition.x);
         this.$.viewport.scrollTop = Math.max(0, viewportPosition.y);
-      },
-
-      getCanvasSize: function() {
-        return this.constVector(1500);
       },
 
       _maybeStartPan: function(e) {

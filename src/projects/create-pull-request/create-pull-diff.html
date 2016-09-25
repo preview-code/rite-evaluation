@@ -35,11 +35,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <template>
     <style>
       :host {
-        display: none;
         padding: 2em 0;
       }
       paper-button {
         @apply(--green-action-button);
+        text-align: center;
+        margin-bottom: 1em;
+      }
+      pull-request-space {
+        height: 1000px;
       }
       paper-spinner {
         display: block;
@@ -49,12 +53,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <info-header title="Describe your changes">
       <span class="subtitle">You can drag the diff sections to re-order them for reviewers.</span>
     </info-header>
-    <pull-request-diff id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]" github-user="[[githubUser]]"></pull-request-diff>
+    <pull-request-diff data-route="diff" id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" sha="[[sha]]" github-user="[[githubUser]]"
+      ordered-groups="{{groups}}"
+      ></pull-request-diff>
+
     <paper-spinner active="[[loading]]"></paper-spinner>
     <paper-button on-tap="_createPR" raised disabled="[[loading]]">Create pull request</paper-button>
   </template>
   <script>
-  /*global FadeInBehavior*/
     Polymer({
       is: 'project-create-pull-diff',
       properties: {
@@ -65,14 +71,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         loading: {
           type: Boolean,
           value: false
+        },
+        groups: Array,
+        showSpace: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+        spaceGroups: {
+          type: Array,
+          notify: true
         }
       },
-      behaviors: [FadeInBehavior],
+      observers: [
+        '_refreshSpaceGroups(groups.*)'
+      ],
       _createPR: function() {
         this.fire('create-pr');
       },
       getOrdering: function() {
         return this.$.changes.getOrdering();
+      },
+      _refreshSpaceGroups: function() {
+        this.spaceGroups = [];
+        this.spaceGroups = this.groups;
       }
     });
   </script>
