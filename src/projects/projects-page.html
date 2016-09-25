@@ -117,7 +117,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <div class="filler"></div>
     <iron-pages
         class="project"
-        selected="[[_getCurrentView(projectSelected, pullRequestSelected, subPage.subpage)]]"
+        selected="[[_getCurrentView(projectSelected, pullRequestSelected, subPage)]]"
         attr-for-selected="data-route"
         on-tap="_tapHideProjectList"
         fallback-selection="overview">
@@ -233,7 +233,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if (!projectSelected) {
           return 'no-selected';
         }
-        return subPage;
+        return subPage.subpage;
       },
       _tapHideProjectList: function() {
         this.showProjectsList = !this.projectSelected;
