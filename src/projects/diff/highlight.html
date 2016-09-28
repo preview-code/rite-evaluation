@@ -180,7 +180,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           </a>
         </span>
         <span class="btns">
-          <paper-icon-button icon="icons:tab" title="Move this change to another group" on-tap="_promptToMove"></paper-icon-button>
+          <paper-icon-button noink icon="icons:tab" title="Move this change to another group" on-tap="_promptToMove"></paper-icon-button>
           <paper-icon-button noink icon="icons:thumb-up" title="Approve this change"
             hidden$="[[!_canUserApprove]]" toggles active="{{_approved}}"></paper-icon-button>
         </span>
@@ -194,13 +194,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <pre><code id="codeView"></code></pre>
       </div>
     </collapsible-content>
-
     <hunk-ghost id="ghost" hunk-text="[[hunk.file.name]]"></hunk-ghost>
-
-    <move-dialog id="moveGroupDialog"
-      action-title="Move commit to another group"
-      items="[[_groupTitles]]"
-    ></move-dialog>
   </template>
 
   <script>
@@ -288,7 +282,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         var event = this.fire('syntax-highlight', {code: code, lang: 'diff'});
         return event.detail.code || code;
       },
-
       _getBackendApprovalPath: function(project, pullRequest) {
         if (project && pullRequest) {
           return project.owner + '/' + project.name + '/pulls/' + pullRequest.number + '/approve';
@@ -337,7 +330,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }.bind(this), 800);
       },
       _promptToMove: function() {
-        this.$.moveGroupDialog.open();
+          this.fire('moveToGroup', { hunk: this.hunk });
       }
     });
   </script>

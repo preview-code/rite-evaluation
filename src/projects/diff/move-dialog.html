@@ -47,13 +47,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         -ms-transition: all 0.4s;
         transition: all 0.4s;
       }
+      iron-icon {
+        opacity: 0.15;
+        fill: var(--secondary-text-color);
+        margin-right: 1em;
+      }
       paper-button {
         color: var(--anchor-color);
       }
       h1 {
         font-size: 20px;
       }
-
       .item {
         padding: 1em;
         border-bottom: solid 1px var(--secondary-background-color);
@@ -63,60 +67,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .ghost iron-icon {
         opacity: 1
       }
-      iron-icon {
-        opacity: 0.15;
-        fill: var(--secondary-text-color);
-        margin-right: 1em;
-      }
       .ghost {
         opacity: 0.5;
         background-color: var(--primary-background-color);
         z-index: 100;
         margin-left: 0.5em;
       }
-
     </style>
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h1 id="title">[[actionTitle]]</h1>
-      <dom-repeat-once id="sortable" items="[[items]]">
-      </dom-repeat-once>
       <div class="buttons">
         <paper-button autofocus dialog-dismiss>OK</paper-button>
       </div>
     </paper-dialog>
-
   </template>
   <script>
     Polymer({
       is: 'move-dialog',
       properties: {
         actionTitle: String,
-        items: Array
-      },
+        hunk: Object
+        }
+      ,
       attached: function() {
-        Sortable.create(this.$.sortable, {
-          group: this.actionTitle + '-group',
-          ghostClass: 'ghost',
-          animation: 300,
-          setData: this._setDragImage
-        });
-        this.$.sortable.addEventListener('update', this._orderUpdated.bind(this));
-      },
-      _orderUpdated: function(e) {
-        e.stopPropagation();
-        this.fire('order', {oldIndex: e.oldIndex, newIndex: e.newIndex});
       },
       open: function() {
-        this.$.sortable.reset(function(groupTitle) {
-          var div = document.createElement('div');
-          div.setAttribute('class', 'item');
-          div.innerHTML = '<iron-icon icon="editor:drag-handle"></iron-icon>' + groupTitle;
-          return div;
-        });
+        this.actionTitle += + ' ' + this.hunk.file.name;
         this.$.dialog.open();
-      },
-      _setDragImage: function(dataTransfer) {
-        dataTransfer.setDragImage(new Image(), 0, 0);
       }
     });
   </script>

@@ -113,6 +113,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-confirm="_addGroup"
     ></input-dialog>
 
+    <move-dialog id="moveGroupDialog"
+      action-title="Move commit to another group"
+    ></move-dialog>
+
   </template>
   <script>
     Polymer({
@@ -154,7 +158,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         'add': '_hunkAdded',
         'update': '_hunkUpdate',
         'orderUpdate': '_updateUI',
-        'rename': '_updateUI'
+        'rename': '_updateUI',
+        'moveToGroup': '_moveToGroup'
       },
       _openAddGroupDialog: function() {
         this.$.addGroupDialog.open();
@@ -220,6 +225,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       getOrdering: function() {
         return this.$.sorter.getOrdering();
+      },
+      _moveToGroup: function(hunk) {
+        this.$.moveGroupDialog.hunk = hunk;
+        this.$.moveGroupDialog.open();
       }
     });
   </script>
