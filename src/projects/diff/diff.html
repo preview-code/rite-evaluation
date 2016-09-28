@@ -226,8 +226,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       getOrdering: function() {
         return this.$.sorter.getOrdering();
       },
-      _moveToGroup: function(hunk) {
-        this.$.moveGroupDialog.hunk = hunk;
+      _moveToGroup: function(sender, args) {
+        this.$.moveGroupDialog.hunk = args.hunk;
         this.$.moveGroupDialog.open();
       }
     });
