@@ -31,8 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
-<link rel="import" href="../../util/dom-repeat-once.html">
-<link rel="import" href="sortable-import.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
 <dom-module id="move-dialog">
   <template>
@@ -76,6 +77,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </style>
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h1 id="title">[[actionTitle]]</h1>
+      <paper-dropdown-menu label="Select a group" selected-item="{{selected}}">
+        <paper-listbox class="dropdown-content">
+          <template is="dom-repeat" items="[[items]]">
+            <paper-item>[[item]]</paper-item>
+          </template>
+        </paper-listbox>
+      </paper-dropdown-menu>
       <div class="buttons">
         <paper-button autofocus dialog-dismiss>OK</paper-button>
       </div>
@@ -86,13 +94,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       is: 'move-dialog',
       properties: {
         actionTitle: String,
-        hunk: Object
-        }
-      ,
+        hunk: Object,
+        items: Array,
+        selected: String
+        },
       attached: function() {
       },
       open: function() {
-        this.actionTitle += + ' ' + this.hunk.file.name;
         this.$.dialog.open();
       }
     });
