@@ -77,10 +77,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </style>
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h1 id="title">[[actionTitle]]</h1>
-      <paper-dropdown-menu label="Select a group" selected-item="{{selected}}">
-        <paper-listbox class="dropdown-content">
+      <paper-dropdown-menu label="Select a group">
+        <paper-listbox class="dropdown-content" selected="[[selected]]" attr-for-selected="group">
           <template is="dom-repeat" items="[[items]]">
-            <paper-item>[[item]]</paper-item>
+            <paper-item group="[[item]]">[[item]]</paper-item>
           </template>
         </paper-listbox>
       </paper-dropdown-menu>
@@ -98,6 +98,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         items: Array,
         selected: String
         },
+      listeners: {
+        'iron-select': 'groupSelected'
+      },
+      groupSelected: function(sender, args) {
+        sender.stopPropagation();
+        if (this.selected == args.item.innerText)
+          return;
+        this.fire('groupSelected', { hunk: this.hunk, oldGroup: this.selected, newGroup: args.item.innerText });
+      },
       attached: function() {
       },
       open: function() {

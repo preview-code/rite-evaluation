@@ -321,7 +321,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this._approvals = e.detail.value;
         this._approved = this.githubUser && !!this._approvals[this.githubUser.id];
       },
-
       flash: function() {
         this.toggleClass('flash', true);
         setTimeout(function() {
@@ -329,7 +328,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           this.fire('stopped-flashing');
         }.bind(this), 800);
       },
-      _promptToMove: function() {
+      _promptToMove: function(sender) {
           this.fire('moveToGroup', { hunk: this.hunk });
       }
     });
