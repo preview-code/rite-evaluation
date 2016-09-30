@@ -115,7 +115,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <move-dialog id="moveGroupDialog"
       action-title="Move commit to another group"
-      items="[[_groupTitles]]"
+      items="[[orderedGroups]]"
     ></move-dialog>
 
   </template>
@@ -160,7 +160,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         'update': '_hunkUpdate',
         'orderUpdate': '_updateUI',
         'rename': '_updateUI',
-        'moveToGroup': '_moveToGroup'
+        'moveToGroup': '_moveToGroup',
+        'groupSelected': '_groupSelected'
       },
       _openAddGroupDialog: function() {
         this.$.addGroupDialog.open();
@@ -224,13 +225,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.set('orderedGroups', []);
         this.set('orderedGroups', groups);
       },
+      _groupSelected: function(sender, args) {        
+        this.$.sorter.addHunkToGroup(args.hunk, args.newGroupId, 0);
+       this.$.sorter.removeHunkFromGroup(args.oldGroupId, args.hunk);
+      },
       getOrdering: function() {
         return this.$.sorter.getOrdering();
       },
       _moveToGroup: function(sender, args) {
         var prg = sender.path.find(function(e){ return e.localName === 'pull-request-group';  });
         this.$.moveGroupDialog.hunk = args.hunk;
-        this.$.moveGroupDialog.selected = prg.group.info.title;
+        this.$.moveGroupDialog.selected = prg.group.id;
         this.$.moveGroupDialog.open();
       }
     });

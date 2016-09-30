@@ -78,9 +78,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h1 id="title">[[actionTitle]]</h1>
       <paper-dropdown-menu label="Select a group">
-        <paper-listbox class="dropdown-content" selected="[[selected]]" attr-for-selected="group">
+        <paper-listbox class="dropdown-content" selected="[[selected]]" attr-for-selected="group-id">
           <template is="dom-repeat" items="[[items]]">
-            <paper-item group="[[item]]">[[item]]</paper-item>
+            <paper-item group-id="[[item.id]]">[[item.info.title]]</paper-item>
           </template>
         </paper-listbox>
       </paper-dropdown-menu>
@@ -105,7 +105,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         sender.stopPropagation();
         if (this.selected == args.item.innerText)
           return;
-        this.fire('groupSelected', { hunk: this.hunk, oldGroup: this.selected, newGroup: args.item.innerText });
+        this.fire('groupSelected', { hunk: this.hunk, oldGroupId: this.selected, newGroupId: args.item.groupId });
       },
       attached: function() {
       },
