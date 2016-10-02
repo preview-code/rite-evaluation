@@ -225,9 +225,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         this.set('orderedGroups', []);
         this.set('orderedGroups', groups);
       },
-      _groupSelected: function(sender, args) {        
-        this.$.sorter.addHunkToGroup(args.hunk, args.newGroupId, 0);
-       this.$.sorter.removeHunkFromGroup(args.oldGroupId, args.hunk);
+      _groupSelected: function(sender, args) {
+        var oldGroup = this.$$('#group-' + args.oldGroupId);
+        var newGroup = this.$$('#group-' + args.newGroupId);
+        var hunk = oldGroup.$$('#hunk-'+args.hunk.id.split('=').join('')).parentElement;
+        var oldHunks = oldGroup.$$('#hunks');
+        var newHunks = newGroup.$$('#hunks');
+        oldHunks.removeChild(hunk);
+        newHunks.appendChild(hunk);
+        this.$.sorter.addHunkToGroup(args.hunk, args.newGroupId, newHunks.children.length - 1);
+        this.$.sorter.removeHunkFromGroup(args.oldGroupId, args.hunk);
       },
       getOrdering: function() {
         return this.$.sorter.getOrdering();

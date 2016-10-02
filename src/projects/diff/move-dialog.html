@@ -78,14 +78,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h1 id="title">[[actionTitle]]</h1>
       <paper-dropdown-menu label="Select a group">
-        <paper-listbox class="dropdown-content" selected="[[selected]]" attr-for-selected="group-id">
+        <paper-listbox id="groups"  class="dropdown-content" selected="[[selected]]" attr-for-selected="group-id">
           <template is="dom-repeat" items="[[items]]">
             <paper-item group-id="[[item.id]]">[[item.info.title]]</paper-item>
           </template>
         </paper-listbox>
       </paper-dropdown-menu>
       <div class="buttons">
-        <paper-button autofocus dialog-dismiss>OK</paper-button>
+        <paper-button id="ok" dialog-confirm>OK</paper-button>
+        <paper-button id="cancel" dialog-dismiss>Cancel</paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -99,17 +100,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         selected: String
         },
       listeners: {
-        'iron-select': 'groupSelected'
+        'iron-overlay-closed': '_dialogClosed'
       },
-      groupSelected: function(sender, args) {
-        sender.stopPropagation();
-        if (this.selected == args.item.innerText)
+      _dialogClosed: function(e) {
+        e.stopPropagation();
+        if (!e.detail.confirmed || this.selected == this.$.groups.selected)
           return;
-        this.fire('groupSelected', { hunk: this.hunk, oldGroupId: this.selected, newGroupId: args.item.groupId });
-      },
-      attached: function() {
+        this.fire('groupSelected', { hunk: this.hunk, oldGroupId: this.selected, newGroupId: this.$.groups.selected });
       },
       open: function() {
+        this.$.groups.selected = this.selected;
         this.$.dialog.open();
       }
     });
