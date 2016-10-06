@@ -103,8 +103,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return project.owner + '/' + project.name + '/pulls/' + pullRequest.number + '/status';
       },
       _updateFirebaseStatus: function(e) {
-        if (!e.detail.value || typeof this.retrievedStatus === 'object'
-            || e.detail.value === this.retrievedStatus || e.detail.value === this.status) {
+        if (!e.detail.value || e.detail.value === this.retrievedStatus || e.detail.value === this.status) {
           return;
         }
         this.status = e.detail.value;
@@ -117,6 +116,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if (typeof retrievedStatus !== 'object') {
           this.status = retrievedStatus;
           this.select(this.status);
+        } else {
+          this.status = ' ';
         }
       },
       select: function(status) {
