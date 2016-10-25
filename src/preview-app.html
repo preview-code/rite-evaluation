@@ -38,6 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="bower_components/prism-element/prism-highlighter.html">
 <link rel="import" href="bower_components/paper-button/paper-button.html">
 
@@ -130,6 +131,13 @@ Prism.languages.diff.other = /.+/m;
       paper-button:hover {
         background: var(--anchor-hover-color);
       }
+      #apiErrorToast {
+      --paper-toast-background-color: darkred;
+      --paper-toast-color: white;
+      }
+      #apiErrorToast a {
+        color:white;
+      }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{page}}" tail="{{tail}}"></app-route>
@@ -179,11 +187,13 @@ Prism.languages.diff.other = /.+/m;
         </template>
         <template is="iron-lazy-page" data-route="404">
           Oops you hit a 404!
-
           <a href="/">Head back home</a>
         </template>
       </iron-lazy-pages>
     </paper-header-panel>
+    <paper-toast id="apiErrorToast" alwaysOnTop="true" noCancelOnOutsideClick="false" class="fit-bottom" duration="20000">
+      <iron-icon icon="icons:error"></iron-icon> Oops! Something went wrong - your page is probably broken, so please <a href="javascript:location.reload()">refresh</a> the page. If the error persists, please contact us.
+    </paper-toast>
   </template>
   <script>
   Polymer({
@@ -198,7 +208,8 @@ Prism.languages.diff.other = /.+/m;
     listeners: {
       'github-token': '_setToken',
       'go-login-github': '_signInWithGitHub',
-      'check-signed-in-failed': '_toHome'
+      'check-signed-in-failed': '_toHome',
+      'api-error': '_apiError'
     },
     attached: function() {
       // On page-load, we may or may not be signed in.
@@ -224,6 +235,9 @@ Prism.languages.diff.other = /.+/m;
     },
     _toHome: function() {
       this.set('page.page', '');
+    },
+    _apiError: function() {
+      this.$.apiErrorToast.open();
     }
   });
   </script>

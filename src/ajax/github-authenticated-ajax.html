@@ -135,6 +135,7 @@ of params with oAuth tokens.
           this.fire('error', e.detail, {
             bubbles: this.bubbles
           });
+          this.fire('api-error');
         }
       },
       _retrievePreviousRequestFromCache: function() {
