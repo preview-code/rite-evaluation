@@ -93,11 +93,33 @@ Prism.languages.diff.other = /.+/m;
         width: 50px;
       }
       #apiErrorToast {
+
         --paper-toast-background-color: darkred;
         --paper-toast-color: white;
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        padding:0;
       }
-        #apiErrorToast a {
+      #apiErrorToast header {
+        background-color: red;
+        padding:2px;
+        font-weight: bolder;
+      }      
+      #apiErrorToast a {
         color:white;
+      }
+      .detail {
+        @apply(--layout-horizontal); 
+        border-bottom: 1px solid maroon;
+        padding:2px 30px;
+      }
+      .detail-key { 
+        @apply(--layout-flex-2);
+        font-weight: bolder;
+      }
+      .detail-value {
+        @apply(--layout-flex-12);        
+        word-wrap:break-word;
       }
     </style>
     <app-location route="{{route}}"></app-location>
@@ -139,8 +161,11 @@ Prism.languages.diff.other = /.+/m;
         </template>
       </iron-lazy-pages>
     </div>
-    <paper-toast id="apiErrorToast" alwaysOnTop="true" noCancelOnOutsideClick="false" class="fit-bottom" duration="20000">
-      <iron-icon icon="icons:error"></iron-icon> Oops! Something went wrong - your page is probably broken, so please <a href="javascript:location.reload()">refresh</a> the page. If the error persists, please contact us.
+    <paper-toast id="apiErrorToast" alwaysOnTop="true" noCancelOnOutsideClick="false" class="fit-bottom" duration="10000">
+      <header>
+        <iron-icon icon="icons:error"></iron-icon>
+        <span>An API error has occured, so your page may be broken. Please <a href="javascript:location.reload()">refresh</a> the page.</span>
+      </header>
     </paper-toast>
   </template>
   <script>
@@ -185,8 +210,31 @@ Prism.languages.diff.other = /.+/m;
     _toHome: function() {
       this.set('page.page', '');
     },
-    _apiError: function() {
-      this.$.apiErrorToast.open();
+    _apiError: function(e) {
+      var toast = this.$.apiErrorToast;
+      var header = toast.firstElementChild;
+      while (toast.firstElementChild)
+        toast.removeChild(toast.firstElementChild);
+      toast.appendChild(header);
+      var domToast = Polymer.dom(toast);
+      var createChild = function(parent, cssClass, innerHtml) {
+            var div = document.createElement('div');
+            if (innerHtml)
+              div.innerHTML = innerHtml;
+            div.className = cssClass;
+            parent.appendChild(div);
+            return div;
+      };
+      var addDetail = function(title, message) {
+        var detail = createChild(domToast, 'detail');
+        createChild(detail, 'detail-key', title);
+        createChild(detail, 'detail-value', message);
+      };
+      addDetail('source', '&lt;' + e.detail.source.name + ' id="' + e.detail.source.id +'" .../&gt;');
+      addDetail('url', e.detail.url);
+      addDetail('referrer', e.detail.referrer);
+      addDetail('request', e.detail.request.method + ' ' + e.detail.request.url + '<br/>' + JSON.stringify(e.detail.request.headers));
+      toast.open();
     }
   });
   </script>

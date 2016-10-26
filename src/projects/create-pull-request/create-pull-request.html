@@ -95,7 +95,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       refurl="[[backendPath]]"
       last-response="{{number}}"
       on-response="_madePulls"
-      on-error="_handlePRCreateError"
       loading="{{loadingPR}}"
       ></backend-ajax>
 
@@ -223,10 +222,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           var location = '/projects/' + this.project.owner + '/' + this.project.name + '/pulls/' + this.number.number + '/overview'
           window.location.assign(location);
         }
-      },
-      _handlePRCreateError: function(e) {
-        var response = e.detail.request.parseResponse();
-        this.$.errorToast.show({text: response ? response.message : 'Could not connect to server.'});
       }
     });
   </script>
