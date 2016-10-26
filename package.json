@@ -6,6 +6,7 @@
     "del": "^2.2.1",
     "eslint-plugin-html": "^1.5.5",
     "gulp": "gulpjs/gulp#4.0",
+    "gulp-eslint": "^3.0.1",
     "gulp-html-minifier": "^0.1.8",
     "gulp-if": "^2.0.1",
     "gulp-imagemin": "^3.0.1",
@@ -13,7 +14,7 @@
     "gulp-uglify": "^2.0.0",
     "merge-stream": "^1.0.0",
     "plylog": "^0.4.0",
-    "polymer-build": "^0.4.0"
+    "polymer-build": "^0.4.1"
   },
   "scripts": {
     "build": "node ./node_modules/gulp/bin/gulp.js"

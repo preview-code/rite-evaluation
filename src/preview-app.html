@@ -29,22 +29,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="ajax/firebase-authentication.html">
 
 <!-- Load these elements first to have fetch sub-pages as fast as possible -->
-<link rel="import" href="bower_components/iron-lazy-pages/iron-lazy-pages.html">
-<link rel="import" href="bower_components/app-route/app-location.html">
-<link rel="import" href="bower_components/app-route/app-route.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-styles/color.html">
-<link rel="import" href="bower_components/paper-card/paper-card.html">
-<link rel="import" href="bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="bower_components/prism-element/prism-highlighter.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/prism-element/prism-highlighter.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-<link rel="stylesheet" href="bower_components/font-roboto/roboto.html">
+<link rel="stylesheet" href="../bower_components/font-roboto/roboto.html">
 <link rel="import" href="ajax/github-authenticated-ajax.html">
 
-<script src="bower_components/prism/components/prism-diff.min.js"></script>
+<script src="../bower_components/prism/components/prism-diff.min.js"></script>
 <script>
 /*global Prism*/
 // Match all lines that are not insertions or deletions
@@ -117,11 +117,11 @@ Prism.languages.diff.other = /.+/m;
                   fallback-selection="404"
                   hidden$="[[firebaseLoading]]">
         <template is="iron-lazy-page" data-route=""
-                  path="home-page.html">
+                  path="src/home-page.html">
           <home-page></home-page>
         </template>
         <template is="iron-lazy-page" data-route="projects"
-                  path="projects/projects-page.html">
+                  path="src/projects/projects-page.html">
           <projects-page route="{{tail}}" github-user="[[githubUser]]"></projects-page>
         </template>
         <template is="iron-lazy-page" data-route="404">
@@ -149,6 +149,7 @@ Prism.languages.diff.other = /.+/m;
       'sign-out': '_signout'
     },
     attached: function() {
+      console.log(document.referrer);
       // On page-load, we may or may not be signed in.
       if (this.page.page !== '' || document.referrer.indexOf('preview-code.firebaseapp.com') > -1) {
         this.$.firebase.checkSignedIn();

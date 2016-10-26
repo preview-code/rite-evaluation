@@ -2,7 +2,7 @@
  "staticFileGlobs": [
    "/index.html",
    "/src/**",
-   "/src/bower_components/webcomponentsjs/webcomponents-lite.min.js"
+   "/bower_components/webcomponentsjs/webcomponents-lite.min.js"
  ],
  "navigateFallback": "/index.html",
  "runtimeCaching": [{

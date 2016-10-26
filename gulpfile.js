@@ -17,6 +17,7 @@ const uglify = require('gulp-uglify');
 const cssSlam = require('css-slam').gulp;
 const htmlMinifier = require('gulp-html-minifier');
 const stylemod = require('gulp-style-modules');
+const eslint = require('gulp-eslint');
 
 // Got problems? Try logging 'em
 const logging = require('plylog');
@@ -96,18 +97,21 @@ function dependencies() {
     .pipe(project.rejoin());
 }
 
+function lint() {
+  return gulp.src(['src/**/*.html', '!bower_components/**/*.html', 'test/**/*.html'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
+}
+
 // Clean the build directory, split all source and dependency files into streams
 // and process them, and output bundled and unbundled versions of the project
 // with their own service workers
 gulp.task('default', gulp.series([
   clean([global.config.build.rootDirectory]),
+  lint,
   project.merge(source, dependencies),
   project.serviceWorker
 ]));
 
-gulp.task('lint', function() {
-  return gulp.src(['src/**/*.html', '!src/bower_components/**/*.html', 'test/**/*.html'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-});
+gulp.task('lint', lint);
