@@ -135,6 +135,20 @@ of params with oAuth tokens.
           this.fire('error', e.detail, {
             bubbles: this.bubbles
           });
+          var report = {
+            'source': {
+              'name': this.localName,
+              'id': this.id
+            },
+            'url': this.ownerDocument.URL,
+            'referrer': this.ownerDocument.referrer,
+            'request': {
+              'url': e.currentTarget.requestUrl,
+              'headers': e.currentTarget.requestHeaders,
+              'method': e.currentTarget.method
+            }
+          };
+          this.fire('api-error', report);
         }
       },
       _retrievePreviousRequestFromCache: function() {
