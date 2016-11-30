@@ -20,8 +20,8 @@ const stylemod = require('gulp-style-modules');
 const eslint = require('gulp-eslint');
 
 // Got problems? Try logging 'em
-const logging = require('plylog');
-logging.setVerbose();
+// const logging = require('plylog');
+// logging.setVerbose();
 
 // !!! IMPORTANT !!! //
 // Keep the global.config above any of the gulp-tasks that depend on it
@@ -42,7 +42,7 @@ global.config = {
   serviceWorkerPath: 'service-worker.js',
   // Service Worker precache options based on
   // https://github.com/GoogleChrome/sw-precache#options-parameter
-  swPrecacheConfig: require('./sw-precache-config.json')
+  swPrecacheConfig: require('./sw-precache-config.js')
 };
 
 // Add your own custom gulp tasks to the gulp-tasks directory

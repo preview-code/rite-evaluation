@@ -33,7 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <script>
 /**
  * Behavior to fade in the host element by calling show().
- * @type {Object}
  */
 var FadeInBehaviorImpl = {
   properties: {
@@ -92,5 +91,8 @@ var FadeInBehaviorImpl = {
 };
 
 /*exported FadeInBehavior*/
+/**
+ * @polymerBehavior
+ */
 var FadeInBehavior = [FadeInBehaviorImpl, Polymer.NeonAnimationRunnerBehavior];
 </script>
