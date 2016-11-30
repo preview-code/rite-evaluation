@@ -50,6 +50,7 @@ of the GitHub oAuth token.
         app-name="preview-code"
         provider="github"
         signed-in="{{signedIn}}"
+        status-known="{{statusKnown}}"
         ></firebase-auth>
     <iron-localstorage name="token-storage"
         value="{{_tokens}}"
@@ -72,11 +73,11 @@ of the GitHub oAuth token.
         },
         signedIn: Boolean,
         _tokens: Object,
-        waitingForSignIn: Boolean
+        statusKnown: Boolean
       },
 
       observers: [
-        '_onSignInChange(waitingForSignIn, signedIn)'
+        '_onSignInChange(signedIn, statusKnown)'
       ],
 
       attached: function() {
@@ -124,14 +125,13 @@ of the GitHub oAuth token.
         return this.$.auth.auth.signOut();
       },
 
-      /**
-       * When Firebase confirms the user is signed in (via the signedIn property)
-       * then continue with the current GitHub token from local storage.
-       */
-      _onSignInChange: function(waitingForSignIn, signedIn) {
-        if (!waitingForSignIn) return;
-        if (signedIn) {
-          this.fire('github-token', this._tokens.GitHub);
+      _onSignInChange: function(signedIn, statusKnown) {
+        if (statusKnown) {
+          if (signedIn) {
+            this.fire('signed-in', this._tokens.GitHub);
+          } else {
+            this.fire('signed-out');
+          }
         }
       },
 
