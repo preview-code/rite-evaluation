@@ -94,7 +94,8 @@ of the GitHub oAuth token.
         } else {
           provider.addScope('public_repo');
         }
-        this.$.auth.signInWithRedirect(provider);
+        this.loading = true;
+        this.$.auth.signInWithPopup(provider).then(this.checkSignedIn.bind(this));
       },
 
       /**
@@ -104,23 +105,18 @@ of the GitHub oAuth token.
        * If the GitHub token is present in local-storage, we wait for firebase
        * to confirm the signin. If not, we notify that the user was not signed in.
        */
-      checkSignedIn: function() {
-        this.loading = true;
-        this.$.auth.auth.getRedirectResult().then(function(result) {
-          var redirectDone = !!result.credential;
-          if (redirectDone) {
-            this._parseSuccesfulResult(result);
+      checkSignedIn: function(result) {
+        var redirectDone = !!result.credential;
+        if (redirectDone) {
+          this._parseSuccesfulResult(result);
+        } else {
+          if (this._tokens.GitHub) {
+            this.waitingForSignIn = true;
           } else {
-            if (this._tokens.GitHub) {
-              this.waitingForSignIn = true;
-            } else {
-              this.fire('check-signed-in-failed');
-            }
+            this.fire('check-signed-in-failed');
           }
-          this.loading = false;
-        }.bind(this)).catch(function() {
-          this.loading = false;
-        });
+        }
+        this.loading = false;
       },
 
       signOut: function() {
