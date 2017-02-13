@@ -28,7 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/iron-icons/device-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../ajax/github-authenticated-ajax.html">
 <link rel="import" href="../util/marked-github-element.html">
 
@@ -37,6 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <style>
       :host {
         display: block;
+      }
+      paper-material {
+        @apply(--constraint-width);
+        margin-top: 2em;
         background-color: var(--primary-background-color);
       }
       a {
@@ -84,17 +88,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       last-response="{{contributors}}"
       ></github-authenticated-ajax>
 
-    <div class=container>
-      <template is="dom-repeat" items="[[contributors]]">
-        <div class="repeat">
-          <a href="[[item.html_url]]" target="_blank"><img src$="[[item.avatar_url]]" width="24px" height="24px" alt$="[[item.login]]"/></a><span>[[item.login]]</span>
-        </div>
-      </template>
-    </div>
+    <paper-material elevation="1">
+      <div class=container>
+        <template is="dom-repeat" items="[[contributors]]">
+          <div class="repeat">
+            <a href="[[item.html_url]]" target="_blank"><img src$="[[item.avatar_url]]" width="24px" height="24px" alt$="[[item.login]]"/></a><span>[[item.login]]</span>
+          </div>
+        </template>
+      </div>
 
-    <div class="readme">
-      <marked-github-element markdown="[[readme]]"></marked-github-element>
-    </div>
+      <div class="readme">
+        <marked-github-elemen markdown="[[readme]]"></marked-github-elemen>
+      </div>
+    </paper-material>
   </template>
 
   <script>

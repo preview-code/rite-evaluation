@@ -1,0 +1,210 @@
+
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../util/branch-selector.html">
+<link rel="import" href="../../util/branch-tag.html">
+<link rel="import" href="create-pull-request-description.html">
+<link rel="import" href="../../ajax/github-authenticated-ajax.html">
+
+<dom-module id="project-create-pull-general-info">
+  <template>
+    <style>
+      :host {
+        display: block;
+        @apply(--constraint-width);
+      }
+
+      paper-spinner {
+        display: block;
+        margin: 10px auto;
+      }
+      paper-spinner:not([active]) {
+        display: none;
+      }
+
+      #diffInformation {
+        padding: 2em;
+        border-bottom: solid 1px var(--secondary-background-color);
+        background-color: var(--primary-background-color);
+      }
+
+      .selectBranches {
+        background-color: var(--primary-background-color);
+        padding: 2em 2em;
+        border-bottom: solid 1px var(--secondary-background-color);
+      }
+      h2 {
+        font-size: 1.2em;
+        color: var(--secondary-text-color);
+        margin-top: 0;
+      }
+
+      #nextButton {
+        display: block;
+        background-color: var(--primary-action-green);
+        color: white;
+        margin: 0 auto;
+        width: 100px;
+        text-align: center;
+        margin-top: 2em;
+      }
+    </style>
+
+    <github-authenticated-ajax
+      id="ajaxDiff"
+      refurl="https://api.github.com/repos/[[project.owner]]/[[project.name]]/compare/[[baseBranch]]...[[headBranch]]"
+      handle-as="text"
+      headers='{"Accept": "application/vnd.github.VERSION.diff"}'
+      loading="{{loadingDiff}}"
+      last-response="{{diff}}"
+      on-response="_showPullRequestInformation"
+      ></github-authenticated-ajax>
+
+    <github-authenticated-ajax
+      id="ajaxBranches"
+      refurl="https://api.github.com/repos/[[project.owner]]/[[project.name]]/branches"
+      per-page="250"
+      last-response="{{branches}}"
+      ></github-authenticated-ajax>
+
+    <paper-material elevation="1" class="step-1">
+      <div class="selectBranches">
+        <h2>Choose branches to create a pull request on</h2>
+        Merge into
+        <branch-selector branches="[[branchNames]]"
+          selected="{{baseBranch}}" on-selected="_focusHeadBranch"
+          ></branch-selector>
+        from <branch-selector
+          id="headBranchSelector" branches="[[branchNames]]"
+          selected="{{headBranch}}"
+          ></branch-selector>
+      </div>
+
+      <div id="diffInformation" hidden>
+        <branch-tag branch="[[baseBranch]]"></branch-tag>
+        is up-to-date with all commits on
+        <branch-tag branch="[[headBranch]]"></branch-tag>.
+        Select different branches to create a pull request.
+      </div>
+
+      <project-create-pull-request-description
+        id="description"
+        project="[[project]]"
+        title="{{title}}"
+        description="{{description}}"
+        metadata="{{metadata}}"
+        ></project-create-pull-request-description>
+    </paper-material>
+
+    <paper-spinner active="[[loadingDiff]]"></paper-spinner>
+
+    <paper-button raised hidden=[[!enableNext]] id="nextButton" on-tap="_nextStep">
+      Next<iron-icon icon="chevron-right"></iron-icon>
+    </paper-button>
+  </template>
+  <script>
+  /*global ProjectBehavior*/
+    Polymer({
+      is: 'project-create-pull-general-info',
+      behaviors: [ProjectBehavior],
+
+      observers: [
+        '_fetchBranches(project)',
+        '_fetchDiff(baseBranch, headBranch)',
+        '_reset(project)'
+      ],
+
+      properties: {
+        title: {
+          type: String,
+          observer: '_onTitleChange',
+          notify: true
+        },
+        description: {
+          type: String,
+          notify: true
+        },
+        branches: Array,
+        branchNames: {
+          type: Array,
+          computed: '_branchNames(branches)'
+        },
+        baseBranch: {
+          type: String,
+          notify: true
+        },
+        headBranch: {
+          type: String,
+          notify: true
+        },
+        diff: {
+          type: Object,
+          notify: true
+        },
+        enableNext: {
+          type: Boolean,
+          notify: true
+        }
+      },
+
+      _onTitleChange: function (newTitle, oldTitle) {
+        if (newTitle !== oldTitle) {
+          if (newTitle && newTitle.length > 0) {
+            this.enableNext = true;
+          } else {
+            this.enableNext = false;
+          }
+        }
+      },
+
+      _nextStep: function () {
+        this.fire('general-info-next');
+      },
+
+      _branchNames: function(branches) {
+        return branches.map(function(b) {
+          return b.name;
+        });
+      },
+
+      _focusHeadBranch: function() {
+        this.$.headBranchSelector.focus();
+      },
+
+      _fetchBranches: function() {
+        this.$.ajaxBranches.generateRequest();
+      },
+
+      _reset: function() {
+        this.baseBranch = 'master';
+        this.headBranch = '<select branch>';
+      },
+
+      _enableCreation: function() {
+          this.$.description.show();
+          this.$.diffInformation.hidden = true;
+      },
+      _disableCreation: function() {
+        this.$.description.hide();
+        this.$.diffInformation.hidden = false;
+      },
+
+      _fetchDiff: function(baseBranch, headBranch) {
+        if (headBranch && headBranch !== '<select branch>') {
+          var enable = (headBranch !== baseBranch);
+          if (enable)
+            this.$.ajaxDiff.generateRequest();
+          else
+            this._disableCreation();
+        }
+      },
+
+      _showPullRequestInformation: function() {
+        if (this.diff) {
+          this._enableCreation()
+        } else {
+          this._disableCreation()
+        }
+      },
+    });
+  </script>
+</dom-module>

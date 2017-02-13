@@ -34,7 +34,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <template>
     <style>
       :host {
-        display: none;
+        display: block;
+        @apply(--constraint-width);
         padding: 2em 0;
       }
       paper-button {
@@ -63,7 +64,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           value: false
         }
       },
-      behaviors: [FadeInBehavior],
+      // behaviors: [FadeInBehavior],
       _createPR: function() {
         this.fire('create-pr');
       },
