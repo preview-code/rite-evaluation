@@ -32,10 +32,12 @@
   "resolutions": {
     "app-route": "parent-active-propagation",
     "marked-element": "expose-callback",
-    "iron-test-helpers": "fix-mockinteractions-track"
+    "iron-test-helpers": "fix-mockinteractions-track",
+    "mocha": "^3.1.2",
+    "test-fixture": "^2.0.0"
   },
   "devDependencies": {
-    "web-component-tester": "4.2.2",
+    "web-component-tester": "v6.0.0-prerelease.5",
     "iron-test-helpers": "txsmith/iron-test-helpers#fix-mockinteractions-track"
   }
 }
