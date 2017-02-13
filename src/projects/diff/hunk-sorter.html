@@ -141,7 +141,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return project.owner + '/' + project.name + '/pulls/' + pullRequest.number + '/ordering';
       },
       _getOrderingFromFirebaseObj: function(fbOrdering) {
-        var defaultGroupName = 'Unsorted changes';
+        var defaultGroupName = 'Imported from Github';
         var ordering = [];
         if (fbOrdering.lastChanged) {
           defaultGroupName = 'New changes since: ' + fbOrdering.lastChanged;
