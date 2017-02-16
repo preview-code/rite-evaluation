@@ -105,7 +105,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <div class="sidebar">
           <pr-status id="PRStatus" pull-request="[[pullRequest]]" status="{{_prStatus}}"></pr-status>
           <pull-request-reviewers
-              editable="[[editable]]" pull-request="[[pullRequest]]"
+              editable="[[editable]]" pull-request="{{pullRequest}}"
               on-reviewers-updated="_updateReviewerStatus"></pull-request-reviewers>
           <tags-list>
             <template is="dom-repeat" items="[[issue.labels]]">

@@ -33,7 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../util/collapsible-content.html">
 <link rel="import" href="../../ajax/backend-ajax.html">
-<link rel="import" href="../../ajax/github-authenticated-ajax.html">
 <link rel="import" href="../pull-request/reviewers-list.html">
 <link rel="import" href="../project-behavior.html">
 <link rel="import" href="hunk-file.html">
@@ -170,15 +169,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-data-changed="_onFirebaseApprovalsChange"
       ></firebase-document>
 
-    <github-authenticated-ajax
-      id="getReviewers"
-      method="GET"
-      refurl="[[pullRequest._links.self.href]]/requested_reviewers"
-      headers='{"Accept": "application/vnd.github.black-cat-preview+json"}'
-      last-response="{{reviewersList}}"
-      ></github-authenticated-ajax>
-
-
     <collapsible-content collapse="{{collapsed}}">
       <div class="header">
         <span>
@@ -244,17 +234,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: String,
           computed: '_getFirebaseApprovalPath(project, pullRequest, hunk)'
         },
-        reviewersList: {
-          type: Array
-        },
         reviewers: {
           type: Array,
-          computed: '_getReviewers(reviewersList, _approvals)'
+          computed: '_getReviewers(pullRequest.requested_reviewers, _approvals)'
         }
       },
       observers: [
-        '_observeLinesChanged(hunk.linesChanged, hunk.changes)',
-        '_fetchReviewers(pullRequest.*)'
+        '_observeLinesChanged(hunk.linesChanged, hunk.changes)'
       ],
       _observeLinesChanged: function(linesChanged, code) {
         var lines = code.split('\n');
@@ -350,12 +336,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       _computeHunkFileUrl: function(head, hunk) {
         return head.repo.html_url + '/blob/' + head.sha + '/' + hunk.fileNameUrl;
-      },
-      _fetchReviewers: function(pullRequest) {
-        if  (pullRequest.base._links || pullRequest.base._links) {
-          this.$.getReviewers.generateRequest();
       }
-    }
     });
   </script>
 </dom-module>

@@ -53,14 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       on-response="_updateReviewersList"
       ></github-authenticated-ajax>
 
-    <github-authenticated-ajax
-      id="getReviewers"
-      method="GET"
-      refurl="[[pullRequest._links.self.href]]/requested_reviewers"
-      headers='{"Accept": "application/vnd.github.black-cat-preview+json"}'
-      on-response="_getReviewers"
-      ></github-authenticated-ajax>
-
     <reviewers-list id="list" editable reviewers="[[reviewers]]" on-remove-reviewer="_removeReviewers"></reviewers-list>
     <set-reviewers hidden$="[[!editable]]" owner="[[pullRequest.user.login]]" on-reviewer-changed="_postReviewer"></set-reviewers>
 
@@ -71,15 +63,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       is: 'pull-request-reviewers',
       behaviors: [ProjectBehavior],
       properties: {
-        pullRequest: Object,
+        pullRequest: {
+          type: Object,
+          notify: true
+        },
         editable: Boolean,
         reviewers: {
           type: Array,
+          computed: '_getReviewers(pullRequest.requested_reviewers)'
         }
       },
-      observers: [
-        '_fetchReviewers(pullRequest.*)'
-      ],
       _removeReviewers: function(e) {
         this.$.removeReviewers.body = {
           reviewers: [e.detail.login]
@@ -96,20 +89,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           this.$.postReviewers.generateRequest();
         }
       },
-      _getReviewers: function(e) {
-        this._makeReviewers(e.detail.response)
-      },
-      _updateReviewersList: function(e) {
-        this._makeReviewers(e.detail.response.requested_reviewers);
-        this.fire('reviewers-updated', e.detail.response);
-      },
-      _fetchReviewers: function(pullRequest) {
-        if (pullRequest.base._links || pullRequest._links) {
-          this.$.getReviewers.generateRequest();
-        }
-      },
-      _makeReviewers: function(reviewers) {
-        this.reviewers = reviewers.map(function(reviewer) {
+      _getReviewers: function(reviewers) {
+        return reviewers.map(function(reviewer) {
           return {
             login: reviewer.login,
             // TODO(Tim): Extract LGTM from backend
@@ -117,6 +98,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             avatar_url: reviewer.avatar_url
           };
         });
+      },
+      _updateReviewersList: function(e) {
+        this.set('pullRequest.requested_reviewers', e.detail.response.requested_reviewers);
+        this.fire('reviewers-updated', e.detail.response);
       }
     });
   </script>

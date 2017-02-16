@@ -96,14 +96,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       refurl="[[pr._links.statuses.href]]"
       last-response="{{statuses}}"></github-authenticated-ajax>
 
-    <github-authenticated-ajax
-      id="ajaxReviewers"
-      method="GET"
-      refurl="[[pr._links.self.href]]/requested_reviewers"
-      headers='{"Accept": "application/vnd.github.black-cat-preview+json"}'
-      last-response="{{reviewers}}"
-      ></github-authenticated-ajax>
-
     <column-list-item selected="[[selected]]" focused="[[focused]]">
       <div class$="margin indicator [[pr.notification]]">
 
@@ -119,7 +111,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       </div>
       <div class="info">
         <list-item-label type="info" title$="Last updated [[_updatedAtString]]" icon="device:access-time">[[_updatedAtString]]</list-item-label>
-        <list-item-label type="info" title="Amount of reviewers" icon="social:people-outline">[[reviewers.length]]</list-item-label>
+        <list-item-label type="info" title="Amount of reviewers" icon="social:people-outline">[[pr.requested_reviewers.length]]</list-item-label>
         <list-item-label type="info">
           <span hidden$="[[!_hasCIStatus]]">
             <a href$="{{_cistatus.target_url}}" target="_blank">
@@ -173,9 +165,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Boolean,
           value: false,
           computed: '_has(_cistatus)'
-        },
-        reviewers: {
-          type: Array
         }
       },
       observers: [
@@ -208,7 +197,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       _fireAjax: function() {
         this.$.ajaxIssue.generateRequest();
         this.$.ajaxStatuses.generateRequest();
-        this.$.ajaxReviewers.generateRequest();
       },
       _setStatus: function(pr, issue) {
         pr.labels = issue.labels;
