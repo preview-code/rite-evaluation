@@ -119,7 +119,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </span>
       </div>
       <div class="info">
-        <list-item-label type="info" title$="Last updated [[_updatedAtString]] ago" icon="device:access-time">[[_updatedAtString]]</list-item-label>
+        <list-item-label type="info" title$="Last updated [[_updatedAtString]]" icon="device:access-time">[[_updatedAtString]]</list-item-label>
         <list-item-label type="info" title="Amount of reviewers" icon="social:people-outline">[[pr.assignees.length]]</list-item-label>
         <!-- <list-item-label type="info" title="Amount of reviewers" icon="social:people-outline">[[pr.assignee.login]]</list-item-label> -->
       </div>
@@ -155,7 +155,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         _updatedAtString: {
           type: String,
-          computed: 'toDateString(pr.updated_at)'
+          computed: 'toDateStringLength(pr.updated_at, timeLength)'
+        },
+        timeLength: {
+          type: String,
+          value: 'short'
         },
         _hasCIStatus: {
           type: Boolean,
