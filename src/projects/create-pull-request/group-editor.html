@@ -1,0 +1,81 @@
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
+<link rel="import" href="group-block.html">
+
+<dom-module id="group-editor">
+  <template>
+    <style include="drag-element-styles">
+      :host {
+        display: block;
+      }
+      #groups {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      group-block {
+        margin: 0.65em;
+      }
+      .mirror,
+      .shadow {
+        opacity: 0.5;
+      }
+    </style>
+
+    <diff-parser diff="[[diff]]" base-url="[[baseUrl]]" hunks="{{hunks}}"></diff-parser>
+    <hunk-sorter id="sorter" raw-hunks="[[hunks]]" groups="{{orderedGroups}}" pull-request="[[pullRequest]]"></hunk-sorter>
+
+    <drag-element id="groups" handle-selector=".dragHandle">
+      <template is="dom-repeat" items="[[orderedGroups]]">
+        <group-block group="[[item]]"></group-block>
+      </template>
+    </drag-element>
+
+
+  </template>
+  <script>
+    Polymer({
+      is: 'group-editor',
+
+      properties: {
+        baseUrl: String,
+        diff: String,
+        hunks: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        orderedGroups: {
+          type: Array,
+          notify: true
+        },
+        pullRequest: Object
+      },
+
+      // listeners: {
+      //   'drag-start': 'log',
+      //   'drag-finish': 'log',
+      //   'drag-cancel': 'log',
+      //   'drag-over': 'log',
+      //   'drag-out': 'log',
+      //   'drag-move': 'logMove'
+      // },
+
+      log: function(e) {
+        console.log(e.type, e.detail);
+      },
+      logMove: function(e) {
+        var hover = (e.detail.hovering && e.detail.hovering.id) || '';
+        console.log(hover, e.type);
+      },
+
+      newGroup: function () {
+        this.$.sorter.addGroup();
+      }
+    });
+  </script>
+</dom-module>

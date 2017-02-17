@@ -38,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   <template>
     <style>
       :host {
-        display: none;
+        display: block;
         padding: 2em;
         border-bottom: solid 1px var(--secondary-background-color);
         background-color: var(--primary-background-color);
@@ -61,20 +61,47 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         --paper-input-container-color: var(--secondary-background-color);
         --paper-input-container-focus-color: var(--anchor-color);
       }
-      #metadata {
-        margin-top: 10px;
+      #backLink {
+        margin-top: 2em;
+        --paper-checkbox-checked-color: var(--secondary-text-color);
+        --paper-checkbox-checked-ink-color: var(--anchor-color);
+        --paper-checkbox-unchecked-color: var(--anchor-color);
+        --paper-checkbox-unchecked-ink-color: var(--anchor-color);
+        --paper-checkbox-label-color: var(--anchor-color);
+        --paper-checkbox-label-checked-color: var(--primary-text-color);
+      }
+      paper-tooltip {
+        max-width: 50%;
+        --paper-tooltip: {
+          font-size: 16px;
+          line-height: 1.5em;
+        };
       }
     </style>
 
-    <paper-input class="title" label="Enter a pull request title" value="{{title}}"></paper-input>
+    <paper-input
+      disabled=[[disabled]]
+      id="title"
+      class="title"
+      label="Enter a pull request title"
+      value="{{title}}"></paper-input>
     <markdown-input
+      disabled=[[disabled]]
       label="Enter a description for your pull request. Markdown is supported."
       markdown="{{description}}"></markdown-input>
-    <paper-checkbox id="metadata" checked="{{metadata}}">Add direct link on GitHub</paper-checkbox>
-    <paper-tooltip for="metadata" offset="5">Include a link back to the pull request on preview-code.com inside the pull description on GitHub</paper-tooltip>
+    <paper-checkbox
+      disabled=[[disabled]]
+      id="backLink"
+      checked="{{backLink}}">Add link to preview-code on GitHub</paper-checkbox>
+    <paper-tooltip
+      disabled=[[disabled]]
+      for="backLink"
+      offset="5">
+      Include a link back to this pull request on preview-code.com inside the pull description on GitHub.
+      This lets anyone viewing your pull request on GitHub know that you care about code reviews!
+    </paper-tooltip>
   </template>
   <script>
-  /*global FadeInBehavior*/
     Polymer({
       is: 'project-create-pull-request-description',
       properties: {
@@ -86,13 +113,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: String,
           notify: true
         },
-        metadata: {
+        backLink: {
           type: Boolean,
           value: true,
           notify: true
-        }
+        },
+        disabled: Boolean
       },
-      behaviors: [FadeInBehavior]
+
+      focus: function () {
+        this.$.title.focus();
+      }
     });
   </script>
 </dom-module>

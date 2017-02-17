@@ -71,8 +71,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: rgba(0,0,0,0.15);
       }
       .pageControls paper-tab.iron-selected span {
-        background-color: var(--anchor-color);
-        color: white;
+        background-color: var(--accent-color);
+        color: var(--primary-background-color);
       }
       .pageControls paper-tab span {
         transition: all 0.3s ease;
@@ -112,14 +112,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         base-branch="{{baseBranch}}"
         head-branch="{{headBranch}}"
         enable-next="{{enableStep1}}"
+        back-link="{{backLink}}"
       ></project-create-pull-general-info>
       <project-create-pull-diff
         id="diffView"
         diff="[[diff]]"
         base-url="https://github.com/[[project.owner]]/[[project.name]]"
         project="[[project]]"
-        title="[[title]]"
-        description="[[description]]"
         github-user="[[githubUser]]"
         loading="[[loadingPR]]"
         ></project-create-pull-diff>
@@ -153,6 +152,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         backendPath: {
           type: String,
           computed: '_updateBackendPath(title, project)'
+        },
+        backLink: Boolean,
+
+        currentStep: {
+          type: Number,
+          observer: '_onStepChange'
         }
       },
       listeners: {
@@ -166,11 +171,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
 
       _gotoStep1: function () {
-        this._gotoStep(1);
+        this.currentStep = 1;
       },
 
-      _gotoStep: function (step) {
-        this.currentStep = step;
+      _nextStep: function () {
+        if (this.currentStep === 0) {
+          this.currentStep++;
+        } else if (this.currentStep === 1) {
+          this.currentStep++;
+        }
+      },
+      _prevStep: function () {
+        if (this.currentStep === 1) {
+          this.currentStep--;
+        } else if (this.currentStep === 2) {
+          this.currentStep--;
+        }
+      },
+
+      _onStepChange: function (step) {
         if (step === 0) {
           this.$.prevArrow.disabled = true;
           this.$.nextArrow.disabled = !this.enableStep1;
@@ -180,21 +199,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         } else if (step === 2) {
           this.$.prevArrow.disabled = false;
           this.$.nextArrow.disabled = true;
-        }
-      },
-
-      _nextStep: function () {
-        if (this.currentStep === 0) {
-          this._gotoStep(this.currentStep + 1);
-        } else if (this.currentStep === 1) {
-          this._gotoStep(this.currentStep + 1);
-        }
-      },
-      _prevStep: function () {
-        if (this.currentStep === 1) {
-          this._gotoStep(this.currentStep - 1);
-        } else if (this.currentStep === 2) {
-          this._gotoStep(this.currentStep - 1);
         }
       },
 
@@ -212,6 +216,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           description: this.description,
           base: this.baseBranch,
           head: this.headBranch,
+          metadata: this.backLink,
           ordering: this.$.diffView.getOrdering()
         };
         this.$.createPull.generateRequest();

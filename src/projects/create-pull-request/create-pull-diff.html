@@ -27,32 +27,88 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
 <link rel="import" href="../../util/fade-in-behavior.html">
-<link rel="import" href="../diff/diff.html">
+<link rel="import" href="group-editor.html">
+<link rel="import" href="../diff/hunk-highlighter.html">
 
 <dom-module id="project-create-pull-diff">
   <template>
-    <style>
+    <style include="drag-element-styles">
       :host {
         display: block;
-        @apply(--constraint-width);
-        padding: 2em 0;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
       }
-      paper-button {
-        @apply(--green-action-button);
+    
+      header {
+        margin: 0 2em;
+        border-bottom: solid 1px var(--secondary-text-color);
+        margin-bottom: 1em;
+        padding-bottom: 1em;
+        display: flex;
       }
+      header h2 {
+        margin: 0;
+        font-weight: 300;
+        flex: 1
+      }
+      header .add {
+        background-color: var(--primary-background-color);
+        padding: 2px;
+        padding: 0.5em;
+        height: 2em;
+        width: auto;
+      }
+
       paper-spinner {
         display: block;
         margin: 10px auto;
       }
+
+      iron-list {
+        height: 100vh;
+        overflow: hidden;
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      hunk-highlighter {
+        margin: 1em;
+      }
+      .mirror, .shadow {
+        opacity: 0.5;
+      }
+      .list {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
     </style>
-    <span class="subtitle">You can drag the diff sections to re-order them for reviewers.</span>
-    <pull-request-diff id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" github-user="[[githubUser]]"></pull-request-diff>
-    <paper-spinner active="[[loading]]"></paper-spinner>
-    <paper-button on-tap="_createPR" raised disabled="[[loading]]">Create pull request</paper-button>
+    <header>
+      <h2>Create and edit groups</h2>
+      <paper-button raised class="add" icon="add" on-tap="_newGroup"><iron-icon icon="add"></iron-icon>Add</paper-button>
+    </header>
+    <group-editor id="editor" diff="[[diff]]" base-url="[[baseUrl]]" ordered-groups="{{orderedGroups}}"></group-editor>
+
+    <header>
+      <h2>Imported changes from GitHub</h2>
+    </header>
+
+    <drag-element id="unsorted" handle-selector=".dragHandle" container-selector=".list">
+      <div class="list">
+        <template is="dom-repeat" items="[[importedGroup]]" as="hunk">
+          <hunk-highlighter hunk="[[hunk]]"></hunk-highlighter>
+        </template>
+      </div>
+    </drag-element>
+    <!--<pull-request-diff id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" github-user="[[githubUser]]"></pull-request-diff> -->
+
+    <paper-spinner alt="Fetching diff" active="[[loading]]"></paper-spinner>
   </template>
   <script>
-  /*global FadeInBehavior*/
     Polymer({
       is: 'project-create-pull-diff',
       properties: {
@@ -62,15 +118,73 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         loading: {
           type: Boolean,
           value: false
-        }
+        },
+        orderedGroups: {
+          type: Array,
+          observer: '_onGroupsChange'
+        },
+        importedGroup: Array,
+
+        _cachedHunkShadow: Object,
+        _cachedHunkMirror: Object,
       },
-      // behaviors: [FadeInBehavior],
+
+      attached: function() {
+        this.$.unsorted.createMirror = this._copyHunkMirror.bind(this);
+        this.$.unsorted.createShadow = this._copyHunkShadow.bind(this);
+      },
+
+      _copyHunkShadow: function(el) {
+        if (!this._cachedHunkShadow) {
+          this._cachedHunkShadow = el.cloneNode();
+        }
+        this._cachedHunkShadow.hunk = el.hunk;
+        return this._cachedHunkShadow;
+      },
+
+      _copyHunkMirror: function(el) {
+        if (!this._cachedHunkMirror) {
+          this._cachedHunkMirror = el.cloneNode();
+        }
+        this._cachedHunkMirror.hunk = el.hunk;
+        return this._cachedHunkMirror;
+      },
+
       _createPR: function() {
         this.fire('create-pr');
       },
+
       getOrdering: function() {
         return this.$.changes.getOrdering();
-      }
+      },
+
+      _onGroupsChange: function(groups) {
+        if (groups[0]) {
+          this.importedGroup =  groups[0].diff;
+        }
+      },
+
+      _newGroup: function() {
+        this.$.editor.newGroup();
+      },
+
+      listeners: {
+        'drag-start': 'log',
+        'drag-finish': 'log',
+        'drag-cancel': 'log',
+        'drag-over': 'log',
+        'drag-out': 'log'
+      },
+
+      log: function(e) {
+        console.log(e.type, e.detail);
+      },
+      logMove: function(e) {
+        var hover = (e.detail.hovering && e.detail.hovering.id) || '';
+        console.log(hover, e.type);
+      },
+
+      
     });
   </script>
 </dom-module>

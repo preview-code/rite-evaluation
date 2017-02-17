@@ -21,7 +21,7 @@
         display: none;
       }
 
-      #diffInformation {
+      #upToDateBranchesInfo {
         padding: 2em;
         border-bottom: solid 1px var(--secondary-background-color);
         background-color: var(--primary-background-color);
@@ -79,7 +79,7 @@
           ></branch-selector>
       </div>
 
-      <div id="diffInformation" hidden>
+      <div id="upToDateBranchesInfo" hidden>
         <branch-tag branch="[[baseBranch]]"></branch-tag>
         is up-to-date with all commits on
         <branch-tag branch="[[headBranch]]"></branch-tag>.
@@ -87,11 +87,12 @@
       </div>
 
       <project-create-pull-request-description
+        disabled
         id="description"
         project="[[project]]"
         title="{{title}}"
         description="{{description}}"
-        metadata="{{metadata}}"
+        back-link="{{backLink}}"
         ></project-create-pull-request-description>
     </paper-material>
 
@@ -140,6 +141,10 @@
           type: Object,
           notify: true
         },
+        backLink: {
+          type: Boolean,
+          notify: true
+        },
         enableNext: {
           type: Boolean,
           notify: true
@@ -180,28 +185,32 @@
       },
 
       _enableCreation: function() {
-          this.$.description.show();
-          this.$.diffInformation.hidden = true;
+          this.$.description.disabled = false;
+          this.$.upToDateBranchesInfo.hidden = true;
+          this.$.description.focus();
       },
       _disableCreation: function() {
-        this.$.description.hide();
-        this.$.diffInformation.hidden = false;
+        this.$.description.disabled = true;
+        this.$.upToDateBranchesInfo.hidden = false;
+        this.enableNext = false;
+        this.title = "";
+        this.description = "";
       },
 
       _fetchDiff: function(baseBranch, headBranch) {
         if (headBranch && headBranch !== '<select branch>') {
           var enable = (headBranch !== baseBranch);
-          if (enable)
+          if (enable) {
+            this._enableCreation();
             this.$.ajaxDiff.generateRequest();
-          else
+          } else {
             this._disableCreation();
+          }
         }
       },
 
       _showPullRequestInformation: function() {
-        if (this.diff) {
-          this._enableCreation()
-        } else {
+        if (!this.diff) {
           this._disableCreation()
         }
       },

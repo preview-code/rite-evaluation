@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../diff/hunk-file-item.html">
+
+<dom-module id="group-block">
+  <template>
+    <style>
+      :host {
+        display: block;
+        width: 275px;
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
+      .group {
+        border-radius: 6px;
+        background-color: var(--primary-background-color);
+        height: 275px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      header {
+        display: flex;
+        background-color: var(--accent-color);
+      }
+      editable-title {
+        padding: 0.5em;
+        --edit-title-font-size: 1em;
+        --edit-title-font-weight: 600;
+        --edit-title-color: white;
+        --edit-title-focus-color: white;
+
+      }
+      .hunks {
+        overflow-y: auto;
+        flex: 1;
+      }
+      hunk-file-item {
+        border-bottom: solid 1px var(--secondary-background-color);
+      }
+      .dragHandle {
+        height: 28px;
+        width: 28px;
+        color: white;
+        padding: 8px;
+        cursor: -webkit-grabbing;
+      }
+    </style>
+
+    <paper-material class="group" elevation="2">
+      <header>
+        <iron-icon class="dragHandle" icon="editor:drag-handle"></iron-icon>
+        <editable-title editable value="{{group.info.title}}"></editable-title>
+      </header>
+      <div class="hunks">
+        <template is="dom-repeat" items="[[group.diff]]">
+          <hunk-file-item hunk=[[item]]></hunk-file-item>
+        </template>
+      </div>
+    </paper-material>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'group-block',
+
+      properties: {
+        group: Object
+      }
+    });
+  </script>
+</dom-module>

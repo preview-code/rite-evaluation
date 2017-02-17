@@ -1,0 +1,58 @@
+<link rel="import" href="../../../bower_components/diff-highlighter/diff-highlighter.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+
+<dom-module id="hunk-highlighter">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-material {
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      diff-highlighter {
+        background: var(--primary-background-color);
+        --line-number-columns: {
+          background: none;
+          color: var(--secondary-text-color);
+        }
+      }
+      header {
+        font-family: monospace;
+        font-weight: bold;
+        padding: 8px;
+        background: var(--hunk-header-color);
+        color: white;
+      }
+
+      .dragHandle {
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+        cursor: grabbing;
+      }
+    </style>
+
+    <paper-material elevation="1">
+      <header>
+        <iron-icon class="dragHandle" icon="editor:drag-handle"></iron-icon>
+        <span class="filename">[[hunk.file.name]]</span>
+      </header>
+      <diff-highlighter 
+        code="[[hunk.changes]]" 
+        before-start="[[hunk.linesChanged.startLineBefore]]" 
+        after-start="[[hunk.linesChanged.startLineAfter]]"></diff-highlighter>
+    </paper-material>
+    
+  </template>
+  <script>
+    Polymer({
+      is: 'hunk-highlighter',
+
+      properties: {
+        hunk: Object
+      }
+    });
+  </script>
+</dom-module>

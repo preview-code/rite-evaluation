@@ -39,18 +39,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../bower_components/prism-element/prism-highlighter.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <link rel="stylesheet" href="../bower_components/font-roboto/roboto.html">
 <link rel="import" href="ajax/github-authenticated-ajax.html">
-
-<script src="../bower_components/prism/components/prism-diff.min.js"></script>
-<script>
-/*global Prism*/
-// Match all lines that are not insertions or deletions
-Prism.languages.diff.other = /.+/m;
-</script>
 
 <dom-module id="preview-app">
   <template>
@@ -104,8 +96,6 @@ Prism.languages.diff.other = /.+/m;
       refurl="https://api.github.com/user"
       last-response="{{githubUser}}"
       ></github-authenticated-ajax>
-
-    <prism-highlighter></prism-highlighter>
 
     <div class="main">
       <div class="loading" hidden$="[[!firebaseLoading]]">
