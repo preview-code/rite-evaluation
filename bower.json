@@ -32,9 +32,7 @@
   "resolutions": {
     "app-route": "parent-active-propagation",
     "marked-element": "expose-callback",
-    "iron-test-helpers": "fix-mockinteractions-track",
-    "mocha": "^3.1.2",
-    "test-fixture": "^2.0.0"
+    "iron-test-helpers": "fix-mockinteractions-track"
   },
   "devDependencies": {
     "web-component-tester": "^5.0.0",
