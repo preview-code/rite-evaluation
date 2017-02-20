@@ -37,7 +37,7 @@
     "test-fixture": "^2.0.0"
   },
   "devDependencies": {
-    "web-component-tester": "v6.0.0-prerelease.5",
+    "web-component-tester": "^5.0.0",
     "iron-test-helpers": "txsmith/iron-test-helpers#fix-mockinteractions-track"
   }
 }
