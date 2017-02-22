@@ -56,14 +56,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         text-align: right;
         font-size: 0.9em;
       }
-      :host([type=box]) span {
+      :host([type=box]) span, :host([type=label]) span {
         display: inline-block;
         padding: 3px 6px;
         border-radius: 6px;
-        color: var(--primary-background-color);
-        color: var(--tag-text-color);
-        background-color: var(--pr-status-color);
-        background-color: var(--tag-color);
+        color: var(--primary-background-color, --tag-text-color);
+        background-color: var(--pr-status-color, --tag-color);
+      }
+      :host([type=label]) span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 120%;
       }
       iron-icon {
         vertical-align: text-bottom;
