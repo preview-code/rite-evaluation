@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../util/markdown-input.html">
 <link rel="import" href="../../util/a-user.html">
 <link rel="import" href="../../util/branch-tag.html">
-<link rel="import" href="../../util/ci-buttons.html">
+<link rel="import" href="../../util/ci-indicator.html">
 <link rel="import" href="../../ajax/github-authenticated-ajax.html">
 <link rel="import" href="../../list-items/tags-list.html">
 
@@ -141,10 +141,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <div class="secondary-container">
       <div hidden$="[[hideCI]]"> 
-        <ci-buttons show-content="true" status="[[CIstatus.state]]" size="48px" icon-passed="icons:check-circle" icon-failed="icons:cancel" icon-pending="icons:radio-button-unchecked" ></ci-buttons>
+        <ci-indicator show-content="true" status="[[CIstatus.state]]" size="48px" icon-passed="icons:check-circle" icon-failed="icons:cancel" icon-pending="icons:radio-button-unchecked" ></ci-indicator>
         <template is="dom-repeat" items="[[CIstatus.statuses]]">
           <div class="CIlist">
-            <ci-buttons status="[[item.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked"></ci-buttons>
+            <ci-indicator status="[[item.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked"></ci-indicator>
             <a href="[[item.target_url]]" target="_blank">[[item.description]] at [[item.context]]</a>
           </div>
         </template>

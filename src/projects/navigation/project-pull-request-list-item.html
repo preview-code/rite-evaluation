@@ -35,7 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../list-items/tags-list.html">
 <link rel="import" href="../../ajax/github-authenticated-ajax.html">
 <link rel="import" href="../../util/to-date-string-behavior.html">
-<link rel="import" href="../../util/ci-buttons.html">
+<link rel="import" href="../../util/ci-indicator.html">
 
 <dom-module id="project-pull-request-list-item">
   <template>
@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .indicator.true {
         background-color: var(--primary-action-red);
       }
-      ci-buttons {
+      ci-indicator {
         animation: fadein 1s;
       }
       .main span {
@@ -97,7 +97,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <list-item-label type="info">
           <span hidden$="[[!_hasCIStatus]]">
             <a href$="{{_cistatus.target_url}}" target="_blank">
-              <ci-buttons status="[[_cistatus.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked" ></ci-buttons>
+              <ci-indicator status="[[_cistatus.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked" ></ci-indicator>
             </a>
           </span>
         </list-item-label>
