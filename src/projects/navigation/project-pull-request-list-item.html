@@ -97,7 +97,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <list-item-label type="info">
           <span hidden$="[[!_hasCIStatus]]">
             <a href$="{{_cistatus.target_url}}" target="_blank">
-              <ci-buttons size="24px" status="[[_cistatus.state]]" icon1="icons:check-circle" icon2="icons:cancel" ></ci-buttons>
+              <ci-buttons status="[[_cistatus.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked" ></ci-buttons>
             </a>
           </span>
         </list-item-label>

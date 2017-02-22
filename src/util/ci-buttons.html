@@ -56,18 +56,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: none;
       }
     </style>
-        <span class$="icondiv-passed [[status]]"> 
-          <iron-icon  title="CI passed" class="icon-passed" icon="[[icon1]]"></iron-icon>
+        <div class$="icondiv-passed [[status]]"> 
+          <iron-icon  title="CI passed" class="icon-passed" icon="[[iconPassed]]"></iron-icon>
           <span hidden$="[[!showContent]]">All checks have passed:</span>
-        </span>
-        <span class$="icondiv-failure [[status]]"> 
-          <iron-icon title="CI failure" class="icon-failure" icon="[[icon2]]"></iron-icon>
+        </div>
+        <div class$="icondiv-failure [[status]]"> 
+          <iron-icon title="CI failure" class="icon-failure" icon="[[iconFailed]]"></iron-icon>
           <span hidden$="[[!showContent]]">There are failed checks:</span>
-        </span>
-        <span class$="icondiv-pending [[status]]"> 
-          <iron-icon title="CI pending" class="icon-pending" icon="[[icon2]]"></iron-icon>
+        </div>
+        <div class$="icondiv-pending [[status]]"> 
+          <iron-icon title="CI pending" class="icon-pending" icon="[[iconPending]]"></iron-icon>
           <span hidden$="[[!showContent]]">Not all checks have completed yet:</span>
-        </span>        
+        </div>        
   </template>
   <script>
     Polymer({
@@ -84,10 +84,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: String,
           value: "24px"
         },
-        icon1: {
+        iconPass: {
           type: String
         },
-        icon2: {
+        iconFailed: {
+          type: String
+        },
+        iconPending: {
           type: String
         }
       },

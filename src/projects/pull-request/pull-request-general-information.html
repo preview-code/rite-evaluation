@@ -83,12 +83,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         min-width: 0;
       }
       a {
+        padding: 4px;
         margin-left: 12px;
         color: inherit;
         text-decoration: none;
       }
       .CIlist{
         margin-left: 12px;
+        display: flex;  
       }
     </style>
 
@@ -135,10 +137,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <div class="secondary-container">
       <div hidden$="[[hideCI]]"> 
-        <ci-buttons show-content="true" status="[[CIstatus.state]]" size="48px" icon1="icons:check-circle" icon2="icons:cancel" ></ci-buttons>
+        <ci-buttons show-content="true" status="[[CIstatus.state]]" size="48px" icon-passed="icons:check-circle" icon-failed="icons:cancel" icon-pending="icons:radio-button-unchecked" ></ci-buttons>
         <template is="dom-repeat" items="[[CIstatus.statuses]]">
           <div class="CIlist">
-            <ci-buttons status="[[item.state]]" icon1="icons:check" icon2="icons:close" ></ci-buttons>
+            <ci-buttons status="[[item.state]]" icon-passed="icons:check" icon-failed="icons:close" icon-pending="icons:radio-button-unchecked"></ci-buttons>
             <a href="[[item.target_url]]" target="_blank">[[item.description]] at [[item.context]]</a>
           </div>
         </template>
