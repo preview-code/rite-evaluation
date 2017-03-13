@@ -1,10 +1,13 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element.html">
+<link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
 <link rel="import" href="../diff/hunk-file-item.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
 
 <dom-module id="group-block">
   <template>
-    <style>
+    <style include="drag-element-styles">
       :host {
         display: block;
         width: 275px;
@@ -35,9 +38,24 @@
         overflow-y: auto;
         flex: 1;
       }
+      drag-element {
+        display: block;
+        height: 100%;
+      }
       hunk-file-item {
         border-bottom: solid 1px var(--secondary-background-color);
       }
+      hunk-file-item.mirror {
+        border: dashed 1px var(--secondary-background-color);
+        background-color: var(--primary-background-color);
+        width: auto !important;
+        height: auto !important;
+      }
+
+      hunk-file-item.shadow {
+        opacity: 0.5;
+      }
+
       .dragHandle {
         height: 28px;
         width: 28px;
@@ -53,9 +71,8 @@
         <editable-title editable value="{{group.info.title}}"></editable-title>
       </header>
       <div class="hunks">
-        <template is="dom-repeat" items="[[group.diff]]">
-          <hunk-file-item hunk=[[item]]></hunk-file-item>
-        </template>
+        <drag-element id="drag" link-identifier="group-editor">
+        </drag-element>
       </div>
     </paper-material>
 
@@ -64,8 +81,67 @@
     Polymer({
       is: 'group-block',
 
+      observers: ['_onDiffChange(group.diff)'],
+
       properties: {
-        group: Object
+        group: {
+          type: Object,
+          notify: true
+        },
+
+        _cacheHunkElem: Object
+      },
+
+      listeners: {
+        'drag-finish': '_add',
+        'drag-finish-remove': '_remove'
+      },
+
+      attached: function() {
+        this.$.drag.createShadow = this._createHunkItem.bind(this);
+        this.$.drag.createDropElement = this._createDropItem.bind(this);
+      },
+
+      _add: function(e) {
+        if (e.detail.source !== this.$.drag) {
+          e.detail.source.fire('drag-finish-remove', e.detail);
+          this.group.diff.splice(e.detail.destElementIndex, 0, e.detail.dragElement.hunk);
+        } else {
+          // Move element from sourceElementIndex to destElementIndex.
+          this.group.diff.splice(e.detail.destElementIndex, 0, this.group.diff.splice(e.detail.sourceElementIndex, 1)[0]);
+        }
+        this._onDiffChange(this.group.diff);
+        this.fire('group-change');
+      },
+
+      _remove: function(e) {
+        e.stopPropagation();
+        this.group.diff.splice(e.detail.sourceElementIndex, 1);
+        this._onDiffChange(this.group.diff);
+      },
+
+      _onDiffChange: function(diff) {
+        this.$.drag.innerHTML = '';
+        diff.forEach(function(hunk) {
+          var elem = document.createElement('hunk-file-item');
+          elem.hunk = hunk;
+          this.$.drag.appendChild(elem);
+        }.bind(this));
+      },
+      
+      _createHunkItem: function(draggedElem) {
+        if (draggedElem.nodeName === 'HUNK-FILE-ITEM') {
+          return draggedElem.cloneNode(true);
+        }
+        if (!this._cacheHunkElem) {
+          this._cacheHunkElem = document.createElement('hunk-file-item');
+        }
+        this._cacheHunkElem.hunk = draggedElem.hunk;
+        return this._cacheHunkElem;
+      },
+
+      _createDropItem: function(draggedElem) {
+        return undefined;
       }
     });
   </script>

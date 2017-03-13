@@ -78,8 +78,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       hunk-highlighter {
         margin: 1em;
       }
-      .mirror, .shadow {
+      .mirror, .shadow, .dragging {
         opacity: 0.5;
+      }
+      .mirror {
+        overflow: hidden;
+        max-height: 150px;
+        max-width: 300px;
       }
       .list {
         max-width: 960px;
@@ -97,9 +102,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <h2>Imported changes from GitHub</h2>
     </header>
 
-    <drag-element id="unsorted" handle-selector=".dragHandle" container-selector=".list">
+    <drag-element 
+      id="unsorted" 
+      handle-selector=".dragHandle" 
+      container-selector=".list"
+      link-identifier="group-editor">
       <div class="list">
-        <template is="dom-repeat" items="[[importedGroup]]" as="hunk">
+        <template id="repeat" is="dom-repeat" items="[[importedGroup]]" as="hunk">
           <hunk-highlighter hunk="[[hunk]]"></hunk-highlighter>
         </template>
       </div>
@@ -119,19 +128,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           type: Boolean,
           value: false
         },
-        orderedGroups: {
-          type: Array,
-          observer: '_onGroupsChange'
-        },
+        orderedGroups: Array,
         importedGroup: Array,
 
         _cachedHunkShadow: Object,
         _cachedHunkMirror: Object,
       },
 
+      listeners: {
+        'group-change': '_onGroupsChange'
+      },
+
       attached: function() {
         this.$.unsorted.createMirror = this._copyHunkMirror.bind(this);
         this.$.unsorted.createShadow = this._copyHunkShadow.bind(this);
+        this.$.unsorted.canDrop = function() { return false; };
       },
 
       _copyHunkShadow: function(el) {
@@ -158,33 +169,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return this.$.changes.getOrdering();
       },
 
-      _onGroupsChange: function(groups) {
-        if (groups[0]) {
-          this.importedGroup =  groups[0].diff;
+      _onGroupsChange: function() {
+        var groups = this.orderedGroups;
+        if (groups && groups[groups.length-1]) {
+          this.importedGroup =  groups[groups.length-1].diff;
+          this.$.repeat.render();
+          console.log(groups[groups.length-1]);
         }
       },
 
       _newGroup: function() {
         this.$.editor.newGroup();
-      },
-
-      listeners: {
-        'drag-start': 'log',
-        'drag-finish': 'log',
-        'drag-cancel': 'log',
-        'drag-over': 'log',
-        'drag-out': 'log'
-      },
-
-      log: function(e) {
-        console.log(e.type, e.detail);
-      },
-      logMove: function(e) {
-        var hover = (e.detail.hovering && e.detail.hovering.id) || '';
-        console.log(hover, e.type);
-      },
-
-      
+      }      
     });
   </script>
 </dom-module>

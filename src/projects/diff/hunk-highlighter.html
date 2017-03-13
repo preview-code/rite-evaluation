@@ -1,4 +1,4 @@
-<link rel="import" href="../../../bower_components/diff-highlighter/diff-highlighter.html">
+<link rel="import" href="../../../bower_components/code-highlighter/code-highlighter.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 
 <dom-module id="hunk-highlighter">
@@ -12,7 +12,7 @@
         border-radius: 6px;
         overflow: hidden;
       }
-      diff-highlighter {
+      code-highlighter {
         background: var(--primary-background-color);
         --line-number-columns: {
           background: none;
@@ -39,10 +39,10 @@
         <iron-icon class="dragHandle" icon="editor:drag-handle"></iron-icon>
         <span class="filename">[[hunk.file.name]]</span>
       </header>
-      <diff-highlighter 
+      <code-highlighter 
         code="[[hunk.changes]]" 
         before-start="[[hunk.linesChanged.startLineBefore]]" 
-        after-start="[[hunk.linesChanged.startLineAfter]]"></diff-highlighter>
+        after-start="[[hunk.linesChanged.startLineAfter]]"></code-highlighter>
     </paper-material>
     
   </template>

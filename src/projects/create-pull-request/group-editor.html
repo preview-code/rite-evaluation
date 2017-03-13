@@ -3,6 +3,8 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/drag-element/drag-element.html">
 <link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
+<link rel="import" href="../diff/hunk-sorter.html">
+<link rel="import" href="../diff/diff-parser.html">
 <link rel="import" href="group-block.html">
 
 <dom-module id="group-editor">
@@ -30,7 +32,7 @@
 
     <drag-element id="groups" handle-selector=".dragHandle">
       <template is="dom-repeat" items="[[orderedGroups]]">
-        <group-block group="[[item]]"></group-block>
+        <group-block group="{{item}}"></group-block>
       </template>
     </drag-element>
 
@@ -51,31 +53,33 @@
         },
         orderedGroups: {
           type: Array,
-          notify: true
+          notify: true,
+          observer: '_notifyGroupChange'
         },
         pullRequest: Object
       },
+      
+      listeners: {
+        'drag-finish-remove': '_removeUnsortedHunk'
+      },
 
-      // listeners: {
-      //   'drag-start': 'log',
-      //   'drag-finish': 'log',
-      //   'drag-cancel': 'log',
-      //   'drag-over': 'log',
-      //   'drag-out': 'log',
-      //   'drag-move': 'logMove'
+      // log: function(e) {
+      //   debugger;
+      //   console.log(e.type, e.detail);
       // },
 
-      log: function(e) {
-        console.log(e.type, e.detail);
-      },
-      logMove: function(e) {
-        var hover = (e.detail.hovering && e.detail.hovering.id) || '';
-        console.log(hover, e.type);
+      _removeUnsortedHunk: function(e) {
+        debugger;
       },
 
       newGroup: function () {
         this.$.sorter.addGroup();
+      },
+
+      _notifyGroupChange: function() {
+        this.fire('group-change');
       }
+
     });
   </script>
 </dom-module>
