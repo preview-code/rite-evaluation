@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../../util/collapsible-content.html">
 <link rel="import" href="../pull-request/pull-request-add-comments.html">
 <link rel="import" href="../pull-request/pull-request-comment.html">
-<link rel="import" href="around-diff.html">
+<link rel="import" href="hunk-controls.html">
 
 <dom-module id="pull-request-group">
   <template>
@@ -48,11 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: relative;
         margin: 2em 0;
         padding: 1em 2em;
-        -webkit-transition: all 0.3s ease;
-        -moz-transition: all 0.3s ease;
-        -ms-transition: all 0.3s ease;
-        -o-transition: all 0.3s ease;
-        transition: all 0.3s ease;
       }
       header {
         min-height: 2em;
@@ -73,7 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <markdown-input hidden$="[[hideDescription]]" disabled="[[!editable]]" label="Enter a description for these changes. Markdown is supported."
           markdown="{{group.info.description}}"></markdown-input>
           <template is="dom-repeat" items="[[group.diff]]">
-            <around-diff diff="[[item]]" pull-request="[[pullRequest]]" github-user="[[githubUser]]"></around-diff>
+            <hunk-controls hunk="[[item]]" pull-request="[[pullRequest]]" github-user="[[githubUser]]"></hunk-controls>
           </template>
 
           <collapsible-content class="toggle-comments" collapse="{{collapseComments}}" hidden$="[[editable]]">

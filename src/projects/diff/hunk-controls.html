@@ -37,10 +37,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <link rel="import" href="../pull-request/reviewers-list.html">
 <link rel="import" href="hunk-file.html">
 
-<dom-module id="around-diff">
+<dom-module id="hunk-controls">
   <template>
     <style>
-    [hidden] {
+      [hidden] {
         display: none !important;
       }
       :host {
@@ -103,7 +103,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       <div class="header">
         <span>
           <a href$="[[fileUrl]]" target="_blank">
-            <hunk-file title="View file on GitHub" hunk="[[diff]]">
+            <hunk-file title="View file on GitHub" hunk="[[hunk]]">
               <iron-icon class="reply" icon="reply"></iron-icon>
             </hunk-file>
           </a>
@@ -114,25 +114,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </span>
         <reviewers-list small reviewers="[[reviewers]]"></reviewers-list>
       </div>
-      <hunk-element hunks="[[diffs]]"></hunk-element>
+      <hunk-element hunks="[[hunks]]"></hunk-element>
     </collapsible-content>
 
   </template>
   <script>
     /*global ProjectBehavior*/
     Polymer({
-      is: 'around-diff',
+      is: 'hunk-controls',
       behaviors: [ProjectBehavior],
       properties: {
-        diffs: {
+        hunks: {
           type: Array,
-          computed: '_computedDiffs(diff)'
+          computed: '_computedhunks(hunk)'
         },
-        diff: Object,
+        hunk: Object,
         githubUser: Object,
         fileUrl: {
           type: String,
-          computed: '_computeHunkFileUrl(pullRequest.head, diff)'
+          computed: '_computeHunkFileUrl(pullRequest.head, hunk)'
         },
         pullRequest: Object,
         collapsed: Boolean,
@@ -153,15 +153,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         },
         _firebaseApprovalPath: {
           type: String,
-          computed: '_getFirebaseApprovalPath(project, pullRequest, diff)'
+          computed: '_getFirebaseApprovalPath(project, pullRequest, hunk)'
         },
         reviewers: {
           type: Array,
           computed: '_getReviewers(pullRequest.requested_reviewers, _approvals)'
         }
       },
-      _computedDiffs: function (diff) {
-        return [diff];
+      _computedhunks: function (hunk) {
+        return [hunk];
       },
       _getBackendApprovalPath: function(project, pullRequest) {
         if (project && pullRequest) {
@@ -189,9 +189,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         return a;
       },
       _onApproveChange: function(isApproved) {
-        if (this.diff && (!this._approvals || isApproved !== this._approvals[this.githubUser.id])) {
+        if (this.hunk && (!this._approvals || isApproved !== this._approvals[this.githubUser.id])) {
           this.$.approveAjax.body = {
-            hunkId: this.diff.id,
+            hunkId: this.hunk.id,
             isApproved: isApproved,
             githubLogin: this.githubUser.id
           };

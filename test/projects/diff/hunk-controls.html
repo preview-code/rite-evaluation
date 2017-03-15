@@ -31,14 +31,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <head>
   <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
-  <title>around-diff-tests</title>
+  <title>hunk-controls-tests</title>
   <script src='../../../bower_components/webcomponentsjs/webcomponents-lite.min.js'></script>
   <script src='../../../bower_components/web-component-tester/browser.js'></script>
   <script src='../../../bower_components/iron-test-helpers/mock-interactions.js'></script>
   <script src='test-diffs.js'></script>
 
   <!-- Import the element to test -->
-  <link rel='import' href='../../../src/projects/diff/around-diff.html'>
+  <link rel='import' href='../../../src/projects/diff/hunk-controls.html'>
 
 </head>
 
@@ -46,12 +46,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <test-fixture id="basic">
     <template>
-      <around-diff></around-diff>
+      <hunk-controls></hunk-controls>
     </template>
   </test-fixture>
 
   <script>
-    suite('<around-diff>', function () {
+    suite('<hunk-controls>', function () {
       var elem, button;
 
       Polymer({
@@ -106,16 +106,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         button = elem.$$('[icon="icons:thumb-up"]');
       });
 
-      test('as reviewer', function () {
+      test('user can approve as reviewer', function () {
         assert.equal(button.hidden, false);
       });
 
-      test('not when no reviewer', function () {
+      test('user can not approve when no reviewer', function () {
         elem.githubUser = {login: 'user3'};
         assert.equal(button.hidden, true);
       });
 
-      test('in revewer list', function () {
+      test('user can approve in revewer list', function () {
         assert.equal(button.hidden, false);
       });
 
@@ -128,7 +128,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             owner: 'owner',
             name: 'name'
           };
-          elem.diff = {
+          elem.hunk = {
             id: 'hunkId',
             file: {
               name: 'hunk'
