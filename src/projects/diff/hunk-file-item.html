@@ -1,0 +1,47 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="hunk-file-item">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        padding: 8px;
+      }
+    </style>
+
+    <div class="fileName">
+      [[fileName]]
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'hunk-file-item',
+      properties: {
+        hunk: Object,
+        filePath: {
+          type: Array,
+          computed: '_getHunkFilePath(hunk)'
+        },
+        fileName: {
+          type: String,
+          computed: '_getHunkFileName(filePath)'
+        }
+      },
+
+      _getHunkFilePath: function(hunk) {
+        return hunk.file.name.split('/');
+      },
+
+      _getHunkFileName: function(filePath) {
+        return filePath[filePath.length - 1];
+      },
+
+      cloneNode: function() {
+        var clone = document.createElement('hunk-file-item');
+        clone.hunk = this.hunk;
+        return clone;
+      }
+    });
+  </script>
+</dom-module>

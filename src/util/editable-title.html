@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="input-dialog.html">
 
 <dom-module id="editable-title">
@@ -37,22 +38,45 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
       }
       h2 {
+        font-size: var(--edit-title-font-size);
+        font-weight: var(--edit-title-font-weight);
+        padding: 2px 0;
         margin: 0;
       }
-      paper-icon-button {
-        color: var(--pr-status-color);
-        width: 36px;
-        height: 36px;
-        vertical-align: bottom;
+      paper-input {
+        --paper-input-container: {
+          padding: 0;
+        };
+        --paper-input-container-input: {
+          font-size: 2em;
+          font-size: var(--edit-title-font-size);
+          font-weight: var(--edit-title-font-weight);
+          color: var(--edit-title-color);
+        };
+        --paper-input-container-label: {
+          font-size: 2em;
+          font-size: var(--edit-title-font-size);
+          line-height: inherit;
+          color: var(--edit-title-color, --secondary-text-color);
+        };
+        --paper-input-container-label-floating: {
+          display: none;
+        }
+        --paper-input-container-color: var(--secondary-background-color);
+        --paper-input-container-focus-color: var(--edit-title-focus-color, --anchor-color);
       }
       [hidden] {
         display: none !important;
       }
     </style>
 
-    <h2>[[value]] <paper-icon-button title="Edit title" icon="editor:mode-edit" on-tap="_openDialog" hidden$="[[!editable]]"></paper-icon-button></h2>
+    <template is="dom-if" if="[[editable]]">
+      <paper-input no-label-float label="[[label]]" value="{{value}}"></paper-input>
+    </template>
+    <template is="dom-if" if="[[!editable]]">
+      <h2>[[value]]</h2>
+    </template>
 
-    <input-dialog id="dialog" label="[[label]]" value="[[value]]"></input-dialog>
   </template>
   <script>
     Polymer({
@@ -63,22 +87,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           value: false
         },
         label: {
-          type: String,
+          type: Boolean,
           value: 'Enter a title'
         },
         value: {
           type: String,
           notify: true
         }
-      },
-      listeners: {
-        'confirm': '_onConfirm'
-      },
-      _onConfirm: function(e) {
-        this.value = e.detail;
-      },
-      _openDialog: function() {
-        this.$.dialog.open();
       }
     });
   </script>

@@ -26,49 +26,55 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../util/fade-in-behavior.html">
-<link rel="import" href="../diff/diff.html">
+<link rel="import" href="group-editor.html">
 
 <dom-module id="project-create-pull-diff">
   <template>
-    <style>
+    <style include="drag-element-styles">
       :host {
-        display: none;
-        padding: 2em 0;
+        display: block;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
       }
-      paper-button {
-        @apply(--green-action-button);
+    
+      header {
+        margin: 0 2em;
+        border-bottom: solid 1px var(--secondary-text-color);
+        margin-bottom: 1em;
+        padding-bottom: 1em;
+        display: flex;
+      }
+      header h2 {
+        margin: 0;
+        font-weight: 300;
+        flex: 1
       }
       paper-spinner {
         display: block;
         margin: 10px auto;
       }
+
     </style>
-    <span class="subtitle">You can drag the diff sections to re-order them for reviewers.</span>
-    <pull-request-diff id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" github-user="[[githubUser]]"></pull-request-diff>
-    <paper-spinner active="[[loading]]"></paper-spinner>
-    <paper-button on-tap="_createPR" raised disabled="[[loading]]">Create pull request</paper-button>
+    
+    <group-editor 
+      id="editor" 
+      diff="[[diff]]" 
+      base-url="[[baseUrl]]" 
+      ></group-editor>
+
+    <paper-spinner alt="Submitting pull request..." active="[[loading]]"></paper-spinner>
   </template>
   <script>
-  /*global FadeInBehavior*/
     Polymer({
       is: 'project-create-pull-diff',
       properties: {
         diff: String,
         baseUrl: String,
-        githubUser: Object,
         loading: {
           type: Boolean,
           value: false
         }
-      },
-      behaviors: [FadeInBehavior],
-      _createPR: function() {
-        this.fire('create-pr');
-      },
-      getOrdering: function() {
-        return this.$.changes.getOrdering();
       }
     });
   </script>

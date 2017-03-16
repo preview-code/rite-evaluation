@@ -26,19 +26,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../util/marked-github-element.html">
-<link rel="import" href="../../util/branch-selector.html">
-<link rel="import" href="../../util/branch-tag.html">
-<link rel="import" href="../../util/markdown-input.html">
-<link rel="import" href="../../ajax/github-authenticated-ajax.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../ajax/backend-ajax.html">
 <link rel="import" href="../diff/diff.html">
 <link rel="import" href="../project-behavior.html">
-<link rel="import" href="create-pull-request-description.html">
 <link rel="import" href="create-pull-diff.html">
+<link rel="import" href="create-pull-general-info.html">
 
 <dom-module id="project-create-pull-request">
   <template>
@@ -46,56 +43,48 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       :host {
         display: block;
       }
-      .selectBranches {
-        background-color: var(--primary-background-color);
-        padding: 2em 2em;
-        border-bottom: solid 1px var(--secondary-background-color);
+
+      .pageControls {
+        padding: 1em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
-      .inputs {
-        -webkit-box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
-        box-shadow: 0 0 8px 0 rgba(0,0,0,0.2);
+
+      .pageControls paper-icon-button {
+        will-change: opacity;
+        transition: opacity 0.3s ease;
+        opacity: 1;
       }
-      h2 {
-        font-size: 1.2em;
-        color: var(--secondary-text-color);
-        margin-top: 0;
+
+      .pageControls paper-icon-button[disabled] {
+        opacity: 0;
       }
-      paper-spinner {
-        display: block;
-        margin: 10px auto;
+
+      .pageControls paper-tabs {
+        width: 75%;
       }
-      paper-spinner:not([active]) {
-        display: none;
+      .pageControls paper-tab {
+        width: 33%;
       }
-      #diffInformation {
-        padding: 2em;
-        border-bottom: solid 1px var(--secondary-background-color);
-        background-color: var(--primary-background-color);
+      .pageControls paper-tab:not([disabled]) span {
+        background-color: rgba(0,0,0,0.15);
       }
+      .pageControls paper-tab.iron-selected span {
+        background-color: var(--accent-color);
+        color: var(--primary-background-color);
+      }
+      .pageControls paper-tab span {
+        transition: all 0.3s ease;
+        width: 2.5em;
+        height: 2.5em;
+        line-height: 2.5em;
+        text-align: center;
+        font-size: 18px;
+        border-radius: 1.75em;
+      }
+
     </style>
-    <github-authenticated-ajax
-      id="ajaxBranches"
-      refurl="https://api.github.com/repos/[[project.owner]]/[[project.name]]/branches"
-      per-page="250"
-      last-response="{{branches}}"
-      ></github-authenticated-ajax>
-
-    <github-authenticated-ajax
-      id="ajaxCollaborators"
-      refurl="https://api.github.com/repos/[[project.owner]]/[[project.name]]/contributors"
-      per-page="250"
-      last-response="{{contributors}}"
-      ></github-authenticated-ajax>
-
-    <github-authenticated-ajax
-      id="ajaxDiff"
-      refurl="https://api.github.com/repos/[[project.owner]]/[[project.name]]/compare/[[baseBranch]]...[[headBranch]]"
-      handle-as="text"
-      headers='{"Accept": "application/vnd.github.VERSION.diff"}'
-      loading="{{loadingDiff}}"
-      last-response="{{diff}}"
-      on-response="_showPullRequestInformation"
-      ></github-authenticated-ajax>
 
     <backend-ajax
       id="createPull"
@@ -106,51 +95,35 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       loading="{{loadingPR}}"
       ></backend-ajax>
 
-    <div class="inputs">
-      <div class="selectBranches">
-        <h2>Choose branches to create a pull request on</h2>
-        Merge into
-        <branch-selector branches="[[branchNames]]"
-          selected="{{baseBranch}}" on-selected="_focusHeadBranch"
-          ></branch-selector>
-        from <branch-selector
-          id="headBranchSelector" branches="[[branchNames]]"
-          selected="{{headBranch}}"
-          ></branch-selector>
-      </div>
-
-      <div id="diffInformation" hidden>
-        <div>
-          <branch-tag branch="[[baseBranch]]"></branch-tag>
-          is up-to-date with all commits on
-          <branch-tag branch="[[headBranch]]"></branch-tag>
-        </div>
-        <div>
-          Select different branches to create a pull request.
-        </div>
-      </div>
-
-      <project-create-pull-request-description
-        id="description"
-        project="[[project]]"
+    <div class="pageControls">
+      <paper-icon-button disabled id="prevArrow" icon="icons:chevron-left" on-tap="_prevStep"></paper-icon-button>
+      <paper-tabs selected="{{currentStep}}" no-bar noink>
+        <paper-tab id="step0tab"><span>1</span></paper-tab>
+        <paper-tab disabled=[[!enableStep1]] id="step1tab"><span>2</span></paper-tab>
+        <paper-tab disabled=[[!enableStep2]] id="step2tab"><span>3</span></paper-tab>
+      </paper-tabs>
+      <paper-icon-button disabled id="nextArrow" icon="icons:chevron-right" on-tap="_nextStep"></paper-icon-button>
+    </div>
+    <iron-pages selected="[[currentStep]]">
+      <project-create-pull-general-info
         title="{{title}}"
         description="{{description}}"
-        metadata="{{metadata}}"
-        ></project-create-pull-request-description>
-    </div>
+        diff="{{diff}}"
+        base-branch="{{baseBranch}}"
+        head-branch="{{headBranch}}"
+        enable-next="{{enableStep1}}"
+        back-link="{{backLink}}"
+      ></project-create-pull-general-info>
+      <project-create-pull-diff
+        id="diffView"
+        diff="[[diff]]"
+        base-url="https://github.com/[[project.owner]]/[[project.name]]"
+        project="[[project]]"
+        loading="[[loadingPR]]"
+        ></project-create-pull-diff>
+      </paper-material>
+    </iron-pages>
 
-    <paper-spinner active="[[loadingDiff]]"></paper-spinner>
-
-    <project-create-pull-diff
-      id="diffView"
-      diff="[[diff]]"
-      base-url="https://github.com/[[project.owner]]/[[project.name]]"
-      project="[[project]]"
-      title="[[title]]"
-      description="[[description]]"
-      github-user="[[githubUser]]"
-      loading="[[loadingPR]]"
-      ></project-create-pull-diff>
 
     <paper-toast id="errorToast" horizontal-align="right" horizontal-offset="20"></paper-toast>
   </template>
@@ -163,72 +136,72 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         githubUser: Object,
         title: String,
         description: String,
-        contributors: Array,
-        branches: Array,
         baseBranch: String,
         headBranch: String,
-        metadata: Boolean,
-        loadingPR: false,
-        branchNames: {
-          type: Array,
-          computed: '_branchNames(branches)'
+        enableStep1: {
+          type: Boolean,
+          value: false
         },
+        enableStep2: {
+          type: Boolean,
+          value: false
+        },
+        loadingPR: false,
+
         backendPath: {
           type: String,
           computed: '_updateBackendPath(title, project)'
+        },
+        backLink: Boolean,
+
+        currentStep: {
+          type: Number,
+          observer: '_onStepChange'
         }
       },
-      observers: [
-        '_fetchBranchesAndCollaborators(project)',
-        '_fetchDiff(baseBranch, headBranch)',
-        '_reset(project)'
-      ],
       listeners: {
-        'create-pr': '_createPullRequest'
+        'general-info-next': '_gotoStep1',
+        'submit-pull-request': '_createPullRequest'
       },
-      _reset: function() {
-        this.baseBranch = 'master';
-        this.headBranch = '<select branch>';
+
+      attached: function () {
+        this.currentStep = 0;
+        this.nextMessage = "Next";
       },
-      _enableCreation: function() {
-          this.$.diffView.show();
-          this.$.description.show();
-          this.$.diffInformation.hidden = true;
+
+      _gotoStep1: function () {
+        this.currentStep = 1;
       },
-      _disableCreation: function() {
-        this.$.diffView.hide();
-        this.$.description.hide();
-        this.$.diffInformation.hidden = false;
-      },
-      _fetchBranchesAndCollaborators: function() {
-        this.$.ajaxBranches.generateRequest();
-        this.$.ajaxCollaborators.generateRequest();
-      },
-      _fetchDiff: function(baseBranch, headBranch) {
-        if (headBranch && headBranch !== '<select branch>') {
-          var enable = (headBranch !== baseBranch);
-          if (enable)
-            this.$.ajaxDiff.generateRequest();
-          else
-            this._disableCreation();
+
+      _nextStep: function () {
+        if (this.currentStep === 0) {
+          this.currentStep++;
+        } else if (this.currentStep === 1) {
+          this.currentStep++;
         }
       },
-      _branchNames: function(branches) {
-        return branches.map(function(b) {
-          return b.name;
-        });
-      },
-      _focusHeadBranch: function() {
-        this.$.headBranchSelector.focus();
-      },
-      _showPullRequestInformation: function() {
-        if (this.$.diffView.diff) {
-          this._enableCreation()
-        } else {
-          this._disableCreation()
+      _prevStep: function () {
+        if (this.currentStep === 1) {
+          this.currentStep--;
+        } else if (this.currentStep === 2) {
+          this.currentStep--;
         }
       },
-      _createPullRequest: function() {
+
+      _onStepChange: function (step) {
+        if (step === 0) {
+          this.$.prevArrow.disabled = true;
+          this.$.nextArrow.disabled = !this.enableStep1;
+        } else if (step === 1) {
+          this.$.prevArrow.disabled = false;
+          this.$.nextArrow.disabled = !this.enableStep2;
+        } else if (step === 2) {
+          this.$.prevArrow.disabled = false;
+          this.$.nextArrow.disabled = true;
+        }
+      },
+
+      _createPullRequest: function(e) {
         if (!this.title) {
           this.$.errorToast.show({text: 'Missing pull request title'});
           return;
@@ -242,22 +215,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           description: this.description,
           base: this.baseBranch,
           head: this.headBranch,
-          metadata: this.metadata,
-          ordering: this.$.diffView.getOrdering()
+          metadata: this.backLink,
+          ordering: e.detail.ordering
         };
         this.$.createPull.generateRequest();
       },
+
       _updateBackendPath: function(title, project) {
         return project.owner + '/' + project.name + '/pulls/';
       },
+
       _madePulls: function() {
         if (this.number.number !== 0) {
           var location = '/projects/' + this.project.owner + '/' + this.project.name + '/pulls/' + this.number.number + '/overview'
           window.location.assign(location);
         }
       },
+      
       _handlePRCreateError: function(e) {
         var response = e.detail.request.parseResponse();
+        debugger;
         this.$.errorToast.show({text: response ? response.message : 'Could not connect to server.'});
       }
     });
