@@ -38,7 +38,7 @@
         margin-top: 0;
       }
 
-      #nextButton {
+      .nextButton {
         display: block;
         background-color: var(--primary-action-green);
         color: white;
@@ -98,7 +98,7 @@
 
     <paper-spinner active="[[loadingDiff]]"></paper-spinner>
 
-    <paper-button raised hidden=[[!enableNext]] id="nextButton" on-tap="_nextStep">
+    <paper-button raised hidden=[[!enableNext]] class="nextButton" on-tap="_nextStep">
       Next<iron-icon icon="chevron-right"></iron-icon>
     </paper-button>
   </template>

@@ -94,7 +94,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           pull-request="[[pullRequest]]" group-comments="{{groupComments}}"
           github-user="[[githubUser]]"></pull-request-group>
       </template>
-      <template is="dom-if" if="[[unorderedGroup]]">
+      <template is="dom-if" if="[[unorderedGroup.diff.length]]">
         <pull-request-group id$="group-unordered" 
           group="[[unorderedGroup]]"
           pull-request="[[pullRequest]]"
@@ -146,47 +146,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         });
       },
 
-      jumpToHunk: function(groupId, hunkId) {
-        var headerHeight = 48;
-        var additionalMargin = 16;
-        var scrollTop = Math.min(
-          this.$$('#group-' + groupId).jumpToHunk(hunkId) - 2*headerHeight - additionalMargin,
-          this.scrollHeight - this.getClientRects()[0].height
-        );
-        var timingFn = function(t, b, c, d) {
-          t /= d;
-          return -c * t*(t-2) + b;
-        };
-
-        var startTime = Date.now();
-        var currentScrollTop = this.scrollTop;
-        var deltaScrollTop = scrollTop - currentScrollTop;
-        var duration = 300;
-        var updateFrame = function() {
-          var now = Date.now();
-          var elapsedTime = now - startTime;
-          if (elapsedTime < duration) {
-            var newScroll = timingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration);
-            this.scrollTop = newScroll;
-            requestAnimationFrame(updateFrame);
-          } else {
-            this.scrollTop = scrollTop;
-            this.fire('finished-scrolling');
-          }
-        }.bind(this);
-
-        updateFrame();
-      },
-
       _updateUI: function() {
         var groups = this.orderedGroups;
         this.set('orderedGroups', []);
         this.set('orderedGroups', groups);
       },
 
-      getOrdering: function() {
-        return this.$.sorter.getOrdering();
-      }
     });
   </script>
 </dom-module>

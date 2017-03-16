@@ -58,16 +58,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         createPullRequest.branches = [{name: 'branch1'}, {name: 'branch2'}];
       });
 
-      test('branchNames array is set when branches are made', function() {
-        assert.deepEqual(['branch1', 'branch2'], createPullRequest.branchNames);
-      });
-
-      test('switch to head branch when selecting base branch', function() {
-        var branchSelector = Polymer.dom(createPullRequest.root).querySelectorAll('branch-selector');
-        branchSelector[0].fire('selected');
-        assert.deepEqual(['branch1', 'branch2'], branchSelector[1].branches)
-      });
-
     });
   </script>
 

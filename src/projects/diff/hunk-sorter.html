@@ -83,8 +83,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         '_sortHunks(rawHunks, _remoteOrdering)'
       ],
 
+      attached: function() {
+        debugger;
+      },
+
       getOrdering: function() {
-        return this.orderedGroups.concat([this.unorderedGroup]).map(function(group) {
+        return this.orderedGroups.concat([this.unorderedGroup])
+          .filter(function(group) {
+            return group.diff.length > 0;
+          })
+          .map(function(group) {
           return {
             id: group.id,
             info: group.info,
@@ -105,7 +113,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if (this._groupExists(groupId)) {
           this.orderedGroups = this.orderedGroups.filter(function(g) {
             return g.id !== groupId;
-          })
+          });
         }
       },
 
@@ -128,7 +136,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           for (var j = 0, m = group.diff.length; j < m; j++) {
             if (this._getHunkId(hunk) === this._getHunkId(group.diff[j])) {
               group.diff.splice(j, 1);
-              this._removeGroupIfEmpty(i);
               return;
             }
           }
@@ -150,21 +157,30 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           var size = this.orderedGroups.length-1;
           var group = this.orderedGroups.splice(Math.min(Math.max(oldIndex, 0), size), 1)[0];
           this.orderedGroups.splice(Math.min(Math.max(newIndex, 0), size), 0, group);
-          this.fire('orderUpdate');
         }
+      },
+
+      removeGroupIfEmpty: function(groupId) {
+        this._doForGroup(groupId, function(index, group) {
+          if (group.diff.length === 0) {
+            this.orderedGroups.splice(index, 1);
+          }
+        }.bind(this));
       },
 
       _getOrderingPath: function(project, pullRequest) {
         return project.owner + '/' + project.name + '/pulls/' + pullRequest.number + '/ordering';
       },
       _getOrderingFromFirebaseObj: function(fbOrdering) {
-        var defaultGroupName = 'Imported from Github';
+        var defaultGroupName = 'Unordered changes';
+        var defaultGroupDescription = '*These changes are imported into Preview-Code from GitHub. Either the author used GitHub to create the pull request, or explicitly chose to not order these changes. Only the author of this pull request can order the changes.*';
         var ordering = [];
+        debugger;
         if (fbOrdering.lastChanged) {
-          defaultGroupName = 'New changes since: ' + this.toDateStringLength(fbOrdering.lastChanged, 'long');
+          defaultGroupDescription = '*New changes have been pushed **' + this.toDateStringLength(fbOrdering.lastChanged, 'long') + '**. The author of this pull request did not yet re-order these changes.*';
           ordering = fbOrdering.groups;
         }
-        var defaultGroup = this._createHunkOrdering(defaultGroupName, []);
+        var defaultGroup = this._createHunkOrdering(defaultGroupName, [], defaultGroupDescription);
         return [ordering, defaultGroup];
       },
 
@@ -248,21 +264,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       },
 
-      _createHunkOrdering: function(groupTitle, hunkIds) {
+      _createHunkOrdering: function(groupTitle, hunkIds, description) {
         return {
           id: this._guid(),
           info: {
             title: groupTitle,
-            description: ''
+            description: description || ''
           },
           diff: hunkIds
-        }
-      },
-
-      _removeGroupIfEmpty: function(index) {
-        if (this.orderedGroups[index].diff.length === 0) {
-          this.orderedGroups.splice(index, 1);
-          this.fire('orderUpdate');
         }
       },
 

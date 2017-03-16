@@ -26,13 +26,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../../bower_components/drag-element/drag-element.html">
-<link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
-<link rel="import" href="../../util/fade-in-behavior.html">
 <link rel="import" href="group-editor.html">
-<link rel="import" href="../diff/hunk-highlighter.html">
 
 <dom-module id="project-create-pull-diff">
   <template>
@@ -56,66 +50,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-weight: 300;
         flex: 1
       }
-      header .add {
-        background-color: var(--primary-background-color);
-        padding: 2px;
-        padding: 0.5em;
-        height: 2em;
-        width: auto;
-      }
-
       paper-spinner {
         display: block;
         margin: 10px auto;
       }
 
-      iron-list {
-        height: 100vh;
-        overflow: hidden;
-        max-width: 960px;
-        margin: 0 auto;
-      }
-      hunk-highlighter {
-        margin: 1em;
-      }
-      .mirror, .shadow, .dragging {
-        opacity: 0.5;
-      }
-      .mirror {
-        overflow: hidden;
-        max-height: 150px;
-        max-width: 300px;
-      }
-      .list {
-        max-width: 960px;
-        margin: 0 auto;
-      }
-
     </style>
-    <header>
-      <h2>Create and edit groups</h2>
-      <paper-button raised class="add" icon="add" on-tap="_newGroup"><iron-icon icon="add"></iron-icon>Add</paper-button>
-    </header>
-    <group-editor id="editor" diff="[[diff]]" base-url="[[baseUrl]]" ordered-groups="{{orderedGroups}}"></group-editor>
+    
+    <group-editor 
+      id="editor" 
+      diff="[[diff]]" 
+      base-url="[[baseUrl]]" 
+      ></group-editor>
 
-    <header>
-      <h2>Imported changes from GitHub</h2>
-    </header>
-
-    <drag-element 
-      id="unsorted" 
-      handle-selector=".dragHandle" 
-      container-selector=".list"
-      link-identifier="group-editor">
-      <div class="list">
-        <template id="repeat" is="dom-repeat" items="[[importedGroup]]" as="hunk">
-          <hunk-highlighter hunk="[[hunk]]"></hunk-highlighter>
-        </template>
-      </div>
-    </drag-element>
-    <!--<pull-request-diff id="changes" editable diff="[[diff]]" base-url="[[baseUrl]]" github-user="[[githubUser]]"></pull-request-diff> -->
-
-    <paper-spinner alt="Fetching diff" active="[[loading]]"></paper-spinner>
+    <paper-spinner alt="Submitting pull request..." active="[[loading]]"></paper-spinner>
   </template>
   <script>
     Polymer({
@@ -123,64 +71,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       properties: {
         diff: String,
         baseUrl: String,
-        githubUser: Object,
         loading: {
           type: Boolean,
           value: false
-        },
-        orderedGroups: Array,
-        importedGroup: Array,
-
-        _cachedHunkShadow: Object,
-        _cachedHunkMirror: Object,
-      },
-
-      listeners: {
-        'group-change': '_onGroupsChange'
-      },
-
-      attached: function() {
-        this.$.unsorted.createMirror = this._copyHunkMirror.bind(this);
-        this.$.unsorted.createShadow = this._copyHunkShadow.bind(this);
-        this.$.unsorted.canDrop = function() { return false; };
-      },
-
-      _copyHunkShadow: function(el) {
-        if (!this._cachedHunkShadow) {
-          this._cachedHunkShadow = el.cloneNode();
         }
-        this._cachedHunkShadow.hunk = el.hunk;
-        return this._cachedHunkShadow;
-      },
-
-      _copyHunkMirror: function(el) {
-        if (!this._cachedHunkMirror) {
-          this._cachedHunkMirror = el.cloneNode();
-        }
-        this._cachedHunkMirror.hunk = el.hunk;
-        return this._cachedHunkMirror;
-      },
-
-      _createPR: function() {
-        this.fire('create-pr');
-      },
-
-      getOrdering: function() {
-        return this.$.changes.getOrdering();
-      },
-
-      _onGroupsChange: function() {
-        var groups = this.orderedGroups;
-        if (groups && groups[groups.length-1]) {
-          this.importedGroup =  groups[groups.length-1].diff;
-          this.$.repeat.render();
-          console.log(groups[groups.length-1]);
-        }
-      },
-
-      _newGroup: function() {
-        this.$.editor.newGroup();
-      }      
+      }
     });
   </script>
 </dom-module>

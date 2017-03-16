@@ -119,7 +119,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         diff="[[diff]]"
         base-url="https://github.com/[[project.owner]]/[[project.name]]"
         project="[[project]]"
-        github-user="[[githubUser]]"
         loading="[[loadingPR]]"
         ></project-create-pull-diff>
       </paper-material>
@@ -162,7 +161,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       },
       listeners: {
         'general-info-next': '_gotoStep1',
-        'create-pr': '_createPullRequest'
+        'submit-pull-request': '_createPullRequest'
       },
 
       attached: function () {
@@ -202,7 +201,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       },
 
-      _createPullRequest: function() {
+      _createPullRequest: function(e) {
         if (!this.title) {
           this.$.errorToast.show({text: 'Missing pull request title'});
           return;
@@ -217,21 +216,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           base: this.baseBranch,
           head: this.headBranch,
           metadata: this.backLink,
-          ordering: this.$.diffView.getOrdering()
+          ordering: e.detail.ordering
         };
         this.$.createPull.generateRequest();
       },
+
       _updateBackendPath: function(title, project) {
         return project.owner + '/' + project.name + '/pulls/';
       },
+
       _madePulls: function() {
         if (this.number.number !== 0) {
           var location = '/projects/' + this.project.owner + '/' + this.project.name + '/pulls/' + this.number.number + '/overview'
           window.location.assign(location);
         }
       },
+      
       _handlePRCreateError: function(e) {
         var response = e.detail.request.parseResponse();
+        debugger;
         this.$.errorToast.show({text: response ? response.message : 'Could not connect to server.'});
       }
     });

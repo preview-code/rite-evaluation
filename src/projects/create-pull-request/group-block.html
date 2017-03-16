@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/drag-element/drag-element.html">
 <link rel="import" href="../../../bower_components/drag-element/drag-element-styles.html">
@@ -14,6 +15,7 @@
         flex-grow: 0;
         flex-shrink: 0;
       }
+
       .group {
         border-radius: 6px;
         background-color: var(--primary-background-color);
@@ -35,6 +37,7 @@
 
       }
       .hunks {
+        position: relative;
         overflow-y: auto;
         flex: 1;
       }
@@ -63,6 +66,17 @@
         padding: 8px;
         cursor: -webkit-grabbing;
       }
+
+      .removeBtn {
+        display: none;
+      }
+      drag-element:empty + .removeBtn {
+        display: initial;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     </style>
 
     <paper-material class="group" elevation="2">
@@ -73,6 +87,9 @@
       <div class="hunks">
         <drag-element id="drag" link-identifier="group-editor">
         </drag-element>
+        <paper-button raised class="removeBtn" on-tap="_removeGroup">
+          <iron-icon icon="delete"></iron-icon>Remove
+        </paper-button>
       </div>
     </paper-material>
 
@@ -94,30 +111,47 @@
 
       listeners: {
         'drag-finish': '_add',
-        'drag-finish-remove': '_remove'
+        'remove-hunk': '_remove'
       },
 
       attached: function() {
         this.$.drag.createShadow = this._createHunkItem.bind(this);
-        this.$.drag.createDropElement = this._createDropItem.bind(this);
+        this.$.drag.createDropElement = function() { return undefined };
       },
 
       _add: function(e) {
+        e.stopPropagation();
         if (e.detail.source !== this.$.drag) {
-          e.detail.source.fire('drag-finish-remove', e.detail);
-          this.group.diff.splice(e.detail.destElementIndex, 0, e.detail.dragElement.hunk);
+          e.detail.source.fire('remove-hunk', e.detail);
+          this.fire('add-hunk-to-group', {
+            groupId: this.group.id,
+            hunk: e.detail.dragElement.hunk,
+            toIndex: e.detail.destElementIndex
+          });
         } else {
           // Move element from sourceElementIndex to destElementIndex.
-          this.group.diff.splice(e.detail.destElementIndex, 0, this.group.diff.splice(e.detail.sourceElementIndex, 1)[0]);
+          this.fire('move-hunk', {
+            groupId: this.group.id,
+            fromIndex: e.detail.sourceElementIndex,
+            toIndex: e.detail.destElementIndex
+          })
         }
         this._onDiffChange(this.group.diff);
-        this.fire('group-change');
       },
 
       _remove: function(e) {
         e.stopPropagation();
-        this.group.diff.splice(e.detail.sourceElementIndex, 1);
+        this.fire('remove-hunk-from-group', {
+          groupId: this.group.id,
+          hunk: e.detail.dragElement.hunk
+        });
         this._onDiffChange(this.group.diff);
+      },
+
+      _removeGroup: function() {
+        this.fire('remove-group', {
+          groupId: this.group.id
+        });
       },
 
       _onDiffChange: function(diff) {
@@ -138,10 +172,6 @@
         }
         this._cacheHunkElem.hunk = draggedElem.hunk;
         return this._cacheHunkElem;
-      },
-
-      _createDropItem: function(draggedElem) {
-        return undefined;
       }
     });
   </script>
